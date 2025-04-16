@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User } from "lucide-react";
 import Theme from "../ui/Theme";
-import { useAuth } from "../contexts/AuthContext";
+import useAuth from "../contexts/useAuth";
+
 
 
 
@@ -13,6 +14,8 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const {isAuthenticated , role} = useAuth();
+
+
   console.log( "isAuthenticated ",isAuthenticated );
 
   const toggleMenu = () => setIsOpen(!isOpen);

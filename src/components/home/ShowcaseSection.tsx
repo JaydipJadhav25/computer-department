@@ -32,7 +32,7 @@ const ShowcaseSection = () => {
             Discover the innovative projects developed by our talented students and faculty.
           </p>
           </div>
-          <div className="w-full max-w-5xl mx-auto min-h-1/2">
+          <div className="w-full max-w-5xl mx-auto min-h-1/2 md:h-96">
              <CanvasComp/>
           </div>
 

@@ -4,9 +4,11 @@ import MeshComp from "./MeshComp"
 export default function CanvasComp() {
   return (
 
-      <Canvas shadows={true} style={{ height: '80vh' }} camera={{ position: [-1, -1, -5]}}>
+     <div className="h-72 md:w-full md:h-full mx-auto">
+       <Canvas shadows={true} className="w-full h-full"  camera={{ position: [-1, -1, -5]}}>
         <MeshComp/>
       </Canvas>
+     </div>
 
   )
 }

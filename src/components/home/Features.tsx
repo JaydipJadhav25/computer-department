@@ -63,7 +63,7 @@ const Features = () => {
               <CardTitle>{feature.title}</CardTitle>
             </CardHeader>
             <CardContent className="relative z-10">
-              <p className="text-muted-foreground">{feature.description}</p>
+            <p className="text-muted-foreground">{feature.description}</p>
             </CardContent>
           </Card>
         ))}

@@ -1,5 +1,5 @@
 
-import  { createContext, useState, useEffect, useContext, ReactNode } from "react";
+import  { createContext, useState, useEffect,  ReactNode } from "react";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -70,15 +70,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 };
 
 
-export const useAuth = () => {
+// Fast refresh only works when a file only exports components.
+//  Use a new file to share constants or functions between components.
+// export const useAuth = () => {
 
-  const context = useContext(AuthContext);
+//   const context = useContext(AuthContext);
 
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+//   if (context === undefined) {
+//     throw new Error("useAuth must be used within an AuthProvider");
+//   }
 
-  return context;
-};
+//   return context;
+// };
 
 export default AuthContext;
