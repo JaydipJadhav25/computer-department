@@ -1,7 +1,7 @@
 
 // import React from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Code, Laptop, Users, Terminal } from "lucide-react";
+import { ChevronRight,  Users, Terminal } from "lucide-react";
 import { Link } from "react-router-dom";
 // import { motion } from "framer-motion";
 

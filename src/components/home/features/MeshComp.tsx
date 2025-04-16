@@ -4,9 +4,12 @@ import { useRef } from 'react'
 import * as THREE from "three"
 import {  useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three'
+import { Mesh } from "three";
+
+
 // import { EffectComposer, Bloom } from '@react-three/postprocessing';
-export default function Mesh() {
-    const meashRef = useRef(null);
+export default function MeshComp() {
+    const meashRef = useRef<Mesh>(null);
   
 
       useFrame(({ clock }) => {
