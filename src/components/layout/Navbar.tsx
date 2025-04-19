@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, User } from "lucide-react";
 import Theme from "../ui/Theme";
 import useAuth from "../contexts/useAuth";
+import SoundToggle from "./SoundToggle";
 
 
 
@@ -42,7 +43,7 @@ function Navbar() {
       <nav className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center space-x-2">
           <img
-            src="/logo.png"
+            src="/collage_logo.png"
             alt="Department Logo"
             className="w-12 h-12 object-contain rounded-md"
           />
@@ -67,13 +68,17 @@ function Navbar() {
           </div>
           <div className="flex items-center space-x-2">
            <Theme/>
-
+          </div>
+          <div className="flex items-center space-x-2">
+         <SoundToggle/>
           </div>
         </div>
 
         {/* Mobile Navigation Toggle */}
         <div className="flex md:hidden items-center space-x-2">
           <Theme/>
+         <SoundToggle/>
+           
           <Button variant="ghost" size="icon" onClick={toggleMenu}>
             {isOpen ? (
               <X className="h-5 w-5" />
@@ -115,6 +120,13 @@ function Navbar() {
           </div>
         </div>
       )}
+
+{/* 
+
+        <div className="fixed bottom-4 right-4 z-50">
+          <SoundToggle />
+        </div> */}
+
     </header>
   )
 }

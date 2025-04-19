@@ -47,7 +47,7 @@ export default function MeshComp() {
 
     <meshStandardMaterial  map={colorMap}   transparent side={THREE.DoubleSide} 
           roughness={4.9} /* Reduces roughness for smooth surface */
-          metalness={0.2} /* Adds a glossy effect */
+          metalness={0.1} /* Adds a glossy effect */
         //  wireframe={true} 
     />
 
