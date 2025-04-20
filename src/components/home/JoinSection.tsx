@@ -73,6 +73,7 @@ const JoinSection = () => {
           </div>
         </div>
       </div>
+      
     </div>
   );
 };

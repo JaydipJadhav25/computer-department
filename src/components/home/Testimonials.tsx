@@ -1,10 +1,48 @@
-// import { Card, CardContent } from "@/components/ui/card";
+import { Card  } from "@/components/ui/card";
 // import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-
+import { Badge } from "@/components/ui/badge";
 import { FocusCards } from "@/components/ui/focus-cards";
+import {axiosInstance} from "../../config/axiosConfig"
+import { useEffect, useState } from "react";
 
+
+type Announcement = {
+  _id: string;
+  title: string;
+  description: string;
+  date: string;
+  tag?: string;
+};
 
 const Testimonials = () => {
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+
+  useEffect(()=>{
+
+    const fechAnnouncements = async()=>{
+      try {
+        const response = await axiosInstance("/open/announcements");
+        setAnnouncements(response.data);
+        console.log("responce  :" , response.data);
+
+      } catch (error) {
+        console.log("fech announcements error: " , error);
+        setError("Failed to load announcements.");
+        
+      }finally{
+        setLoading(false)
+      }
+
+    }
+    fechAnnouncements()//call only if mount element
+
+  },[])
+
+
+
   const testimonials = [
     {
       quote:
@@ -108,6 +146,70 @@ const Testimonials = () => {
 
       {/* Announcements Section */}
       {/* Announcements Section */}
+
+
+      <div className="max-w-5xl mx-auto px-4 mt-24">
+  <div className="text-center mb-10">
+    <span className="text-sm font-semibold text-orange-600 bg-orange-100 px-4 py-1 rounded-full">
+      📢 Important Updates
+    </span>
+    <h2 className="text-4xl font-bold mt-4 mb-2 tracking-tight text-primary">
+      Stay in the Loop
+    </h2>
+    <p className="text-muted-foreground text-base">
+      Get the latest announcements, events, and opportunities from ACES.
+    </p>
+  </div>
+
+  {loading && (
+    <p className="text-center text-muted-foreground">Loading announcements...</p>
+  )}
+  {error && (
+    <p className="text-center text-red-500">{error}</p>
+  )}
+  {!loading && announcements.length === 0 && (
+    <p className="text-center text-muted-foreground">No announcements found.</p>
+  )}
+
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {announcements.map((announcement) => (
+      <Card key={announcement._id} className="hover:shadow-xl transition-shadow border bg-background p-6">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center space-x-2">
+            <div className="bg-primary/10 text-primary rounded-full p-2">
+              📣
+            </div>
+            <h3 className="text-xl font-semibold">{announcement.title}</h3>
+          </div>
+          {announcement.tag && (
+            <Badge
+              variant="outline"
+              className={`text-xs px-2 py-0.5 rounded-full ${
+                announcement.tag.toLowerCase() === "important"
+                  ? "bg-red-100 text-red-600"
+                  : "bg-secondary"
+              }`}
+            >
+              {announcement.tag}
+            </Badge>
+          )}
+        </div>
+
+        <p className="text-muted-foreground mb-3">{announcement.description}</p>
+
+        <p className="text-xs text-muted-foreground mt-auto">
+          {new Date(announcement.date).toLocaleDateString("en-US", {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
+        </p>
+      </Card>
+    ))}
+  </div>
+</div> 
+
 
     </div>
   );
