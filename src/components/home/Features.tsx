@@ -17,7 +17,7 @@ console.log("isMobile : " , isMobile);
   AOS.init({
     // Global settings (optional)
     offset: 200,
-    duration: 1000,
+    duration: 300,
     easing: 'ease',
     once: false,
   });

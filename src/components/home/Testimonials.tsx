@@ -173,7 +173,7 @@ const Testimonials = () => {
 
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
     {announcements.map((announcement) => (
-      <Card key={announcement._id} className="hover:shadow-xl transition-shadow border bg-background p-6">
+      <Card key={announcement._id} className="hover:shadow-xl transition-shadow border bg-background hover:bg-background/10 p-6">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
             <div className="bg-primary/10 text-primary rounded-full p-2">
