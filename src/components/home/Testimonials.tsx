@@ -3,8 +3,12 @@ import { Card  } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FocusCards } from "@/components/ui/focus-cards";
 import {axiosInstance} from "../../config/axiosConfig"
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
+// import { motion } from "motion/react";
+// import { LampContainer } from "../ui/lamp";
+import { TypewriterEffect } from "../ui/typewriter-effect";
 
+import {useQuery} from  "@tanstack/react-query"
 
 type Announcement = {
   _id: string;
@@ -14,32 +18,62 @@ type Announcement = {
   tag?: string;
 };
 
-const Testimonials = () => {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-
-  useEffect(()=>{
-
-    const fechAnnouncements = async()=>{
-      try {
-        const response = await axiosInstance("/open/announcements");
-        setAnnouncements(response.data);
-        console.log("responce  :" , response.data);
-
-      } catch (error) {
-        console.log("fech announcements error: " , error);
-        setError("check your network connection or try again later");
-        
-      }finally{
-        setLoading(false)
-      }
-
+ const words = [
+    {
+      text: "Stay",
+    },
+    {
+      text: "In",
+    },
+    {
+      text: "The",
+    },
+    {
+      text: "Loop",
+       className: "text-blue-500 dark:text-blue-500",
     }
-    fechAnnouncements()//call only if mount element
+  ];
 
-  },[])
+const Testimonials = () => {
+  // const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState("");
+
+
+  const{data , isError , isLoading} = useQuery<Announcement[]>({
+    queryKey :['announcements'],
+    queryFn : async ()=> {
+      const responce  = await axiosInstance("/open/announcements");
+
+      return responce.data
+    },
+    staleTime :30000
+  })
+
+  console.log("data : " , data);
+
+
+
+  // useEffect(()=>{
+
+  //   const fechAnnouncements = async()=>{
+  //     try {
+  //       const response = await axiosInstance("/open/announcements");
+  //       setAnnouncements(response.data);
+  //       console.log("responce  :" , response.data);
+
+  //     } catch (error) {
+  //       console.log("fech announcements error: " , error);
+ 
+        
+  //     }finally{
+  //       setLoading(false)
+  //     }
+
+  //   }
+  //   fechAnnouncements()//call only if mount element
+
+  // },[])
 
 
 
@@ -153,26 +187,46 @@ const Testimonials = () => {
     <span className="text-sm font-semibold text-orange-600 bg-orange-100 px-4 py-1 rounded-full">
       📢 Important Updates
     </span>
+{/* 
+ <LampContainer>
+      <motion.h1
+        initial={{ opacity: 0.5, y: 100 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{
+          delay: 0.3,
+          duration: 0.8,
+          ease: "easeInOut",
+        }}
+        className="mt-8 bg-gradient-to-br from-slate-300 to-slate-500 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent md:text-7xl"
+      >
+       Stay in the Loop
+      </motion.h1>
+    </LampContainer> */}
+
+
     <h2 className="text-4xl font-bold mt-4 mb-2 tracking-tight text-primary">
-      Stay in the Loop
+         <TypewriterEffect words={words} />
+
     </h2>
+
+
     <p className="text-muted-foreground text-base">
       Get the latest announcements, events, and opportunities from ACES.
     </p>
   </div>
 
-  {loading && (
+  {isLoading && (
     <p className="text-center text-muted-foreground">Loading announcements...</p>
   )}
-  {error && (
-    <p className="text-center text-red-500">{error}</p>
+  {isError && (
+    <p className="text-center text-red-500">check your network connection or try again later</p>
   )}
-  {!loading && announcements.length === 0 && (
+  {!isLoading && data?.length === 0 && (
     <p className="text-center text-muted-foreground">No announcements found.</p>
   )}
 
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {announcements.map((announcement) => (
+    {data?.map((announcement) => (
       <Card key={announcement._id} className="hover:shadow-xl transition-shadow border bg-background hover:bg-background/10 p-6">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-2">
