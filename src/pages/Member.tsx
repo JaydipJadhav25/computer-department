@@ -1,11 +1,11 @@
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { MemberProps } from "@/components/members/MemberCard";
 import { axiosInstance } from "@/config/axiosConfig";
 import MemberDirectory from "@/components/members/MemberDirectory";
 import { Badge } from "@/components/ui/badge";
-
+import { useQuery } from "@tanstack/react-query"
 
 
 const yearOptions = ["FY", "SY", "TY", "Final Year"];
@@ -27,35 +27,63 @@ const normalizeYear = (year: string): string => {
 
 export default function Member() {
 
-  const [members, setMembers] = useState<MemberProps[]>([]);
-  const [yearFilter, setYearFilter] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
 
-   useEffect(()=>{
-    const fechMembers = async()=>{
-      try {
-        const response = await axiosInstance("/open/members");
+
+  // const [members, setMembers] = useState<MemberProps[]>([]);
+  const [yearFilter, setYearFilter] = useState<string | null>(null);
+  // const [loading, setLoading] = useState(true);
+
+
+   //use react qury
+   const {isError , error , data , isLoading} = useQuery({
+    queryKey : ['members'],
+    queryFn : async()=>{
+         const response = await axiosInstance("/open/members");
         
         // Normalize year values for consistency
         const normalizes = response.data.map((member : MemberProps)=>({
            ...member  , 
            year: normalizeYear(member.year || "")
         }));
-        console.log("response: ", normalizes);
-         setMembers(normalizes);
-      } catch (error) {
-        console.error("Failed to fetch members:", error);
+
+        return normalizes;
+    },
+    gcTime : 300000,
+    staleTime : 300000
+   })
+
+   console.log("data of react-query" , isError , error );
+
+  //  useEffect(()=>{
+  //   const fechMembers = async()=>{
+  //     try {
+  //       const response = await axiosInstance("/open/members");
         
-      }finally{
-        setLoading(false);
-      }
-    }
-   fechMembers();
-   },[])
+  //       // Normalize year values for consistency
+  //       const normalizes = response.data.map((member : MemberProps)=>({
+  //          ...member  , 
+  //          year: normalizeYear(member.year || "")
+  //       }));
+
+  //       console.log("response: ", normalizes);
+  //        setMembers(normalizes);
+
+  //     } catch (error) {
+  //       console.error("Failed to fetch members:", error);
+        
+  //     }finally{
+  //       setLoading(false);
+  //     }
+  //   }
+  //  fechMembers();
+  //  },[])
+
+
+
 
    const filteredMembers = yearFilter
-   ? members.filter((member) => member.year === yearFilter)
-   : members;
+   ? data?.filter((member : MemberProps) => member.year === yearFilter)
+   : data;
 
 
 
@@ -75,7 +103,7 @@ export default function Member() {
             </div>
 
             
-          {loading ? (
+          {isLoading ? (
             <p className="text-center">Loading members...</p>
           ) : (
             <>

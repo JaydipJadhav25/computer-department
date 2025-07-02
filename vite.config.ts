@@ -20,10 +20,10 @@ export default defineConfig(({ mode }) => {
   console.log("Running in mode:", mode);
 
   return {
-    // server: {
-    //   host: "::",
-    //   port: 8080,
-    // },
+    server: {
+      host: "::",
+      port: 8080,
+    },
     plugins: [react()],
        resolve: {
      alias: {

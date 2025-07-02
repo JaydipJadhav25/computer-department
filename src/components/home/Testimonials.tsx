@@ -30,7 +30,7 @@ const Testimonials = () => {
 
       } catch (error) {
         console.log("fech announcements error: " , error);
-        setError("Failed to load announcements.");
+        setError("check your network connection or try again later");
         
       }finally{
         setLoading(false)
