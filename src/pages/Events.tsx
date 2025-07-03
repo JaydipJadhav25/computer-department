@@ -4,7 +4,7 @@ import Navbar from "@/components/layout/Navbar";
 import { axiosInstance } from "@/config/axiosConfig";
 import { useEffect, useState } from   "react";
 import { CalendarDays } from "lucide-react";
-import EventsList from "@/components/events/EventsList";
+
 
 
 
@@ -30,7 +30,8 @@ export default function Events() {
     fetchEvents();
   }, []);
 
-  
+  console.log("event : " , events)
+
   return (
     <div className="min-h-screen flex flex-col">
     <Navbar/>
