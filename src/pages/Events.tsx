@@ -58,7 +58,15 @@ export default function Events() {
             <p className="text-center text-muted-foreground">Loading events...</p>
           ) : (
             // <EventsList  events={events} />
+            <>
             <h1>done all event show on screen</h1>
+             {
+              events.map((ele)=><>
+             <p>{JSON.stringify(ele)}</p>
+            </>)
+             }
+            </>
+            
           )}
         </div>
 

@@ -25,6 +25,7 @@ function Navbar() {
     { title: "Home", path: "/" },
     { title: "Members", path: "/members" },
     { title: "Events", path: "/events" },
+    { title: "Blogs", path: "/blogs" },
     { title: "Dashboard", path: "/dashboard" },
   ];
 
