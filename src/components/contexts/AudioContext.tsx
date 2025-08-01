@@ -33,7 +33,7 @@ export const AudioProvider = ({ children }: { children: React.ReactNode }) => {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     } else {
-      audioRef.current.play();
+      audioRef?.current?.play();
     }
     setIsPlaying(!isPlaying);
   };

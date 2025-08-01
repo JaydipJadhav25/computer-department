@@ -50,7 +50,7 @@ function Navbar() {
           />
 
           <span className="hidden md:inline-block text-sm font-medium">
-            Computer Department
+        Rajgad Technical Campus
           </span>
         </Link>
 

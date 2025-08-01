@@ -8,6 +8,7 @@ import Events from './pages/Events'
 import Dashboard from './pages/Dashboard'
 import { AudioProvider } from './components/contexts/AudioContext';
 import {QueryClientProvider , QueryClient} from "@tanstack/react-query"
+import Blogs from './components/blogs/Blogs'
 
 
 
@@ -23,6 +24,7 @@ const AppRouter = () =>{
     <Route path='/members' element={<Member/>} />
     <Route  path='/events' element={<Events/>}/>
     <Route  path='/dashboard' element={<Dashboard/>}/>
+    <Route  path='/blogs' element={<Blogs/>}/>
     <Route  path='*' element={<NotFound/>}/>
     </Routes>
   )

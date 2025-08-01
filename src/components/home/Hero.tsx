@@ -8,12 +8,46 @@ import ChatBot from "../chatBot/ChatBot";
 import 'aos/dist/aos.css';
 import AOS from 'aos';
 import { useEffect } from "react";
+import HeroDropEffect from "../ui/HeroDropEffect";
 
-import { TextHoverEffect } from "@/components/ui/text-hover-effect";
+// import { TextHoverEffect } from "@/components/ui/text-hover-effect";
+// import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
+// import DropBeamsOnly from "../ui/DropBeamsOnly";
 
 
+import { ContainerScroll } from "../ui/container-scroll-animation";
+import { useIsMobile } from "@/hook/use-mobile";
 
 const Hero = () => {
+
+  const isMobail = useIsMobile();
+  console.log("ismobail  : ", isMobail)
+
+   const slideData = [
+    {
+      title: "Mystic Mountains",
+      button: "Explore Component",
+      src: "https://images.unsplash.com/photo-1494806812796-244fe51b774d?q=80&w=3534&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      title: "Urban Dreams",
+      button: "Explore Component",
+      src: "https://images.unsplash.com/photo-1518710843675-2540dd79065c?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      title: "Neon Nights",
+      button: "Explore Component",
+      src: "https://images.unsplash.com/photo-1590041794748-2d8eb73a571c?q=80&w=3456&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      title: "Desert Whispers",
+      button: "Explore Component",
+      src: "https://images.unsplash.com/photo-1679420437432-80cfbf88986c?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+  ];
+
+
+
   useEffect(() => {
     AOS.init({
       duration: 300, // Global animation speed (in ms)
@@ -24,8 +58,11 @@ const Hero = () => {
 
 
   return (
-<div className="relative overflow-hidden bg-gradient-to-b from-background to-background/80">
+    <div className="relative overflow-hidden bg-gradient-to-b from-background to-background/80">
+    {/* <BackgroundBeamsWithCollision> */}
+      {/* <DropBeamsOnly/> */}
   {/* Animated background elements */}
+    <HeroDropEffect/>
   <div className="absolute inset-0 -z-10 overflow-hidden">
     <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
     <div className="absolute top-1/3 left-1/4 w-72 h-72 bg-secondary/5 rounded-full blur-3xl" />
@@ -53,34 +90,39 @@ const Hero = () => {
 
 
 
-     <div className="absolute right-0">
+     {/* <div className="absolute right-0">
      <TextHoverEffect  text="ACES"/>
-     </div>
+     </div> */}
 
-  <div className="container px-4 py-24 mx-auto">
+  {/* <div className="container px-4 py-24 mx-auto"> */}
+  <div className="container px-4 pb-4 pt-4 mx-auto">
     <div className="flex flex-col lg:flex-row items-center gap-12">
       
       {/* Left section with text */}
       <div
         className="flex-1 text-left space-y-6"  
       >
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
           <img
             src="/logo.png"
             alt="Department Logo"
             className="w-24 h-24 object-contain rounded-xl shadow-md ring-1 ring-muted"
 
           />
-          <span className="block mt-2">
+          {/* <div className="absolute left-0 top-[1px] bg-clip-text bg-no-repeat text-transparent bg-gradient-to-r py-4 from-purple-500 via-violet-500 to-pink-500 [text-shadow:0_0_rgba(0,0,0,0.1)]">
+            <span className="">Exploding beams.</span>
+          </div> */}
+          <span className="block mt-2 bg-clip-text bg-no-repeat text-transparent bg-gradient-to-r py-4 from-purple-700 via-violet-200 to-pink-700 [text-shadow:0_0_rgba(0,0,0,0.1)]">
             Computer Department
             </span>
-        </h1>
+        </h2>
 
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
-          Association of Computer Engineering Students - Building the next generation of tech professionals through innovation, learning, and collaboration.
+         Association of Computer Engineering Students: Shaping future tech leaders through innovation and collaboration.
         </p>
 
-        <div className="flex flex-wrap items-center gap-4 pt-4" data-aos="fade-up" data-aos-delay="300">
+        {/* <div className="flex flex-wrap items-center gap-4 pt-4" data-aos="fade-up" data-aos-delay="300"> */}
+        <div className="flex flex-wrap items-center gap-4 pt-4">
           <Button size="lg" className="gap-2" asChild>
             <Link to="/events">
               <Terminal className="h-5 w-5" />
@@ -96,9 +138,11 @@ const Hero = () => {
           </Button>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 pt-6" data-aos="fade-up" data-aos-delay="400">
+        {/* <div className="flex flex-wrap items-center gap-3 pt-6" data-aos="fade-up" data-aos-delay="400"> */}
+        <div className="flex flex-wrap items-center gap-3 pt-6" >
           {["React", "Python", "AWS", "Machine Learning", "Blockchain"].map((tech, index) => (
-            <span key={tech} className="px-3 py-1 text-sm bg-muted rounded-full" data-aos="zoom-in" data-aos-delay={500 + index * 100}>
+            // <span key={tech} className="px-3 py-1 text-sm bg-muted rounded-full" data-aos="zoom-in" data-aos-delay={500 + index * 100}>
+                    <span key={tech} className="px-3 py-1 text-sm bg-muted rounded-full"> 
               {tech}
             </span>
           ))}
@@ -109,7 +153,7 @@ const Hero = () => {
       
       <div className="flex-1 relative" data-aos="fade-left">
         <div className="relative z-10 bg-card p-1 rounded-lg border shadow-lg overflow-hidden">
-          <div className="bg-black/90 rounded-md overflow-hidden">
+          {/* <div className="bg-black/90 rounded-md overflow-hidden">
             <div className="flex items-center gap-2 px-4 py-2 bg-black/50 border-b border-white/10">
               <div className="flex gap-1.5">
                 <div className="w-3 h-3 rounded-full bg-red-500" />
@@ -129,7 +173,11 @@ const Hero = () => {
               <div className="mt-1 text-white/80">Connecting developers...</div>
               <div className="mt-1 text-green-500">✓ ACES portal launched successfully!</div>
             </div>
-          </div>
+          </div> */}
+        <img src="/img/tech_utsav.jpg" alt="heropng"  width={900} height={900}/>
+        {/* <div className="w-100% h-screen bg-orange-200">
+          jkfh
+        </div> */}
         </div>
 
         {/* Decorative elements */}
@@ -139,9 +187,40 @@ const Hero = () => {
     </div>
   </div>
 
-  <ChatBot />
-</div>
 
+
+          {/* show reels */}
+          {/* show only pc */}
+     {
+      !isMobail &&  <div className="flex flex-col overflow-hidden">
+      <ContainerScroll
+        titleComponent={
+          <>
+            <h1 className="text-4xl font-semibold text-black dark:text-white">
+              TECH UTSAV <br />
+              <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none">
+                CESA
+              </span>
+            </h1>
+          </>
+        }
+      >
+        {/* <img
+          src={`/img/tech_utsav.jpg`}
+          alt="hero"
+          height={720}
+          width={1400}
+          className="mx-auto rounded-2xl object-cover h-full object-left-top"
+          draggable={false}
+        /> */}
+        <video src="/video/collage-video.mp4" controls></video>
+      </ContainerScroll>
+    </div>
+     }
+
+  <ChatBot />
+{/* </BackgroundBeamsWithCollision> */}
+</div>
   );
 };
 

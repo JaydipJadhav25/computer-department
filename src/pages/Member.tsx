@@ -41,7 +41,7 @@ export default function Member() {
          const response = await axiosInstance("/open/members");
         
         // Normalize year values for consistency
-        const normalizes = response.data.map((member : MemberProps)=>({
+        const normalizes = response?.data?.map((member : MemberProps)=>({
            ...member  , 
            year: normalizeYear(member.year || "")
         }));
@@ -82,7 +82,7 @@ export default function Member() {
 
 
    const filteredMembers = yearFilter
-   ? data?.filter((member : MemberProps) => member.year === yearFilter)
+   ? data?.filter((member : MemberProps ) => member?.year === yearFilter)
    : data;
 
 
@@ -102,12 +102,23 @@ export default function Member() {
             </p>
             </div>
 
-            
+          
           {isLoading ? (
             <p className="text-center">Loading members...</p>
           ) : (
             <>
-              <div className="flex justify-center mb-6">
+            {/* 
+            {isError && (
+            <p className="text-center text-red-500">check your network connection or try again later</p>
+             )} */}
+
+            {
+            isError ? <>
+               <p className="text-center text-red-500">check your network connection or try again later</p>
+              </>
+              :
+              <>
+                            <div className="flex justify-center mb-6">
                 <div className="flex flex-wrap gap-2">
                   <Badge
                     variant={yearFilter === null ? "default" : "outline"}
@@ -130,7 +141,10 @@ export default function Member() {
                 </div>
               </div>
 
-              {filteredMembers.length === 0 ? (
+
+
+              
+              {filteredMembers?.length === 0 ? (
                 <p className="text-center text-muted-foreground">
                   No members found matching your search.
                 </p>
@@ -139,6 +153,20 @@ export default function Member() {
                 <MemberDirectory members={filteredMembers} />
                 
               )}
+
+
+              </>
+            }
+{/* 
+              {filteredMembers?.length === 0 ? (
+                <p className="text-center text-muted-foreground">
+                  No members found matching your search.
+                </p>
+              ) : (
+
+                <MemberDirectory members={filteredMembers} />
+                
+              )} */}
             </>
           )}
 

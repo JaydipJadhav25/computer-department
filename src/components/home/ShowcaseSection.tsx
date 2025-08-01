@@ -5,7 +5,6 @@ import 'aos/dist/aos.css'; //
 import { useEffect } from "react";
 
 
-
 const ShowcaseSection = () => {
   // const projects = [
 
@@ -42,7 +41,10 @@ AOS.init({
   }, []);
 
   return (
+    <>
+
     <div className="py-16 bg-muted/30 overflow-hidden">
+    
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
           <h2 data-aos="zoom-out" className="text-3xl font-bold mb-4">Featured Projects</h2>
@@ -88,6 +90,7 @@ AOS.init({
 
         </div>
     </div>
+    </>
   );
 };
 

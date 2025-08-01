@@ -12,7 +12,7 @@ interface MemberDirectoryProps {
 const MemberDirectory = ({ members, showSearch = true }: MemberDirectoryProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   
-  const filteredMembers = members.filter((member) => {
+  const filteredMembers = members?.filter((member) => {
     const searchContent = `${member.name} ${member.role} ${member.skills?.join(" ")}`.toLowerCase();
     return searchContent.includes(searchTerm.toLowerCase());
   });
@@ -32,13 +32,13 @@ const MemberDirectory = ({ members, showSearch = true }: MemberDirectoryProps) =
         </div>
       )}
       
-      {filteredMembers.length === 0 ? (
+      {filteredMembers?.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-muted-foreground">No members found matching your search.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredMembers.map((member) => (
+          {filteredMembers?.map((member) => (
             <MemberCard key={member.id} member={member} />
           ))}
         </div>

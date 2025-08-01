@@ -6,17 +6,22 @@ import ShowcaseSection from "@/components/home/ShowcaseSection"
 import Testimonials from "@/components/home/Testimonials"
 import Footer from "@/components/layout/Footer"
 import Navbar from "@/components/layout/Navbar"
+// import { BackgroundBeamsWithCollision } from '@/components/ui/background-beams-with-collision';
+// import DropBeamsWrapper from '@/components/ui/DropBeamsOnly';
+// import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 
 export default function Index() {
   return (
     <div className="min-h-screen flex flex-col"> 
     <Navbar/>
-    <main className="">
+    <main>
+     {/* <DropBeamsWrapper> */}
        <Hero/>
        <ShowcaseSection/>
        <Features/>
        <Testimonials/>
-       <JoinSection/>
+       <JoinSection/>   
+     {/* </DropBeamsWrapper> */}
     </main>
     <Footer/>
      </div>

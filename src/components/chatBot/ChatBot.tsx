@@ -24,7 +24,7 @@ export default function ChatBot() {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 overflow-hidden">
+    <div className="fixed bottom-3 right-5 z-50 overflow-hidden">
       {open ? (
         <motion.div
           initial={{ opacity: 0, y: 50 }}
