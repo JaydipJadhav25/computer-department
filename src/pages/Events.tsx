@@ -1,36 +1,47 @@
-import { EventProps } from "@/components/events/EventCard";
+// import { EventProps } from "@/components/events/EventCard";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import { axiosInstance } from "@/config/axiosConfig";
-import { useEffect, useState } from   "react";
+// import { useEffect, useState } from   "react";
 import { CalendarDays } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import EventsList from "@/components/events/EventsList";
 
 
 
 
 export default function Events() {
-  const [events, setEvents] = useState<EventProps[]>([]);
-  const [loading, setLoading] = useState(true);
+ 
 
-   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        // const res = await fetch("http://localhost:3000/open/events");
-        // const data = await res.json();
-        const data = await axiosInstance("/open/events");
-        console.log("events data: ", data.data);
-        setEvents(data.data);
-      } catch (err) {
-        console.error("check your network connection!", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //  useEffect(() => {
+  //   const fetchEvents = async () => {
+  //     try {
+  //       // const res = await fetch("http://localhost:3000/open/events");
+  //       // const data = await res.json();
+  //       const data = await axiosInstance("/open/events");
+  //       console.log("events data: ", data.data);
+  //       setEvents(data.data);
+  //     } catch (err) {
+  //       console.error("check your network connection!", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchEvents();
-  }, []);
+  //   fetchEvents();
+  // }, []);
 
-  console.log("event : " , events)
+  const{data , isError , isLoading , error} = useQuery({
+    queryKey : ['events'],
+    queryFn : async()=>{
+       const response = await axiosInstance("/open/events");
+       return response?.data
+    },
+    gcTime : 300000,
+    staleTime : 300000
+  })
+console.log("error: ",error);
+console.log("data : ",data);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -54,17 +65,20 @@ export default function Events() {
 
         {/* Events List */}
         <div className="container mx-auto px-4 py-16">
-          {loading ? (
+          {isLoading ? (
             <p className="text-center text-muted-foreground">Loading events...</p>
           ) : (
-            // <EventsList  events={events} />
             <>
-            <h1>done all event show on screen</h1>
-             {
-              events.map((ele)=><>
-             <p>{JSON.stringify(ele)}</p>
-            </>)
-             }
+          {/* handle error case  */}
+          {isError ?
+          <>
+          <p className="text-center text-red-500">check your network connection or try again later</p>
+          </> 
+          :<>
+            <EventsList events={data} />
+          </>
+          
+          }
             </>
             
           )}

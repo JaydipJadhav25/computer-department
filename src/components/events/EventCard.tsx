@@ -6,7 +6,7 @@ import { format } from "date-fns";
 
 // Matching backend schema
 export interface EventProps {
-  _id: string;
+  id: string;
   name: string;
   description: string;
   date: string; // ISO string
@@ -38,10 +38,100 @@ const EventCard = ({ event }: { event: EventProps }) => {
   
 
   // Combine date + time
-  const dateTime = new Date(`${date.split("T")[0]}T${time}`);
-  const isUpcoming = dateTime > new Date();
-  const formattedDate = format(dateTime, "PPP");
-  const formattedTime = format(dateTime, "p");
+  // const dateTime = new Date(`${date?.split("T")[0]}T${time}`);
+  // console.log("datatime : ", dateTime, "amd  : " , date);
+  // const isUpcoming = dateTime > new Date();
+  // const isUpcoming = true;
+  // const formattedDate = format(dateTime, "PPP");
+  // const formattedTime = format(dateTime, "p");
+
+  //2
+//   const formattedDate = dateTime && !isNaN(new Date(dateTime).getTime())
+//   ? format(new Date(dateTime), "PPP")
+//   : "Invalid Date";
+
+// const formattedTime = dateTime && !isNaN(new Date(dateTime).getTime())
+//   ? format(new Date(dateTime), "p")
+//   : "Invalid Time";
+
+  //3
+// if (dateTime && !isNaN(new Date(dateTime).getTime())) {
+//   const formattedDate = format(new Date(dateTime), "PPP");
+//   const formattedTime = format(new Date(dateTime), "p");
+// } else {
+//   console.error("Invalid dateTime:", dateTime);
+// }
+
+//4
+// const validDate = dateTime && !isNaN(new Date(dateTime).getTime())
+//   ? new Date(dateTime)
+//   : new Date(); // fallback to current date/time
+
+// const formattedDate = format(validDate, "PPP");
+// const formattedTime = format(validDate, "p");
+
+
+//4
+// let dateTime: Date;
+
+// try {
+//   if (date) {
+//     const datePart = date?.split("T")[0]; // "2025-08-08"
+//     const timePart = time ?? "00:00";    // default to midnight if time missing
+//     dateTime = new Date(`${datePart}T${timePart}`);
+//   } else {
+//     dateTime = new Date(); // fallback to now
+//   }
+
+//   if (isNaN(dateTime.getTime())) {
+//     // fallback if still invalid
+//     console.warn("Invalid dateTime, using current date.");
+//     dateTime = new Date();
+//   }
+// } catch (e) {
+//   console.error("Error creating dateTime:", e);
+//   dateTime = new Date(); // always fallback
+// }
+
+
+// const formattedDate = format(dateTime, "PPP");
+// const formattedTime = format(dateTime, "p");
+
+
+
+let dateTime: Date;
+
+try {
+  let datePart: string;
+
+  if (typeof date === "string") {
+    datePart = date.split("T")[0]; // OK if date is string like "2025-08-08T..."
+  } else if (date instanceof Date) {
+    datePart = date?.toISOString().split("T")[0]; // convert to ISO string first
+  } else {
+    throw new Error("Invalid date format");
+  }
+
+  const timePart = time ?? "00:00"; // fallback to midnight
+  dateTime = new Date(`${datePart}T${timePart}`);
+
+  if (isNaN(dateTime.getTime())) {
+    console.warn("Invalid dateTime. Falling back to current time.");
+    dateTime = new Date();
+  }
+} catch (e) {
+  console.error("Error creating dateTime:", e);
+  dateTime = new Date();
+}
+// const isUpcoming = dateTime > new Date();
+const isUpcoming =true;
+// console.log("datatime", dateTime);
+
+console.log("upcoming events : ", isUpcoming);
+const formattedDate = format(dateTime, "PPP");
+const formattedTime = format(dateTime, "p");
+
+
 
   return (
     <Card className="overflow-hidden hover:scale-[1.01] transition-transform duration-200 ease-in-out">
