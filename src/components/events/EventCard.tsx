@@ -7,10 +7,11 @@ import { Calendar, Clock, MapPin, Users } from "lucide-react";
 // Matching backend schema
 export interface EventProps {
   _id: string;
-  name: string;
+  name?: string;
+  title?:string;
   description: string;
   date: string; // ISO string
-  time: string; // e.g. "14:23"
+  time?: string; // e.g. "14:23"
   location: string;
   imgurl?: string;
   googlelink?: string;

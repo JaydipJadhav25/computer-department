@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { AnnouncementProps } from "@/components/announcements/AnnouncementCard";
-import { EventProps } from "@/components/events/EventCard";
+// import { EventProps } from "@/components/events/EventCard";
 import EventCard from "@/components/events/EventCard";
 import { BarChart, Bell, Calendar, Clock, QrCode, Users } from "lucide-react";
 import { ResponsiveContainer, XAxis, YAxis, Tooltip, Bar, BarChart as Chart } from "recharts";
@@ -42,7 +42,7 @@ import { axiosInstance } from "@/config/axiosConfig";
 
 const upcomingEvents  = [
   {
-    id: "1",
+    _id: "1",
     title: "Annual Hackathon 2025",
     description: "Join us for 24 hours of coding, innovation, and fun. Great prizes to be won!",
     date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -53,10 +53,10 @@ const upcomingEvents  = [
     tags: ["Hackathon", "Coding"],
   },
   {
-    id: "2",
+    _id: "2",
     title: "ML Workshop Series",
     description: "Learn the fundamentals of Machine Learning with hands-on examples.",
-    date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+    date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
     location: "Seminar Hall",
     registrationOpen: true,
     registeredCount: 28,
@@ -64,6 +64,16 @@ const upcomingEvents  = [
     tags: ["Workshop", "ML"],
   },
 ];
+
+// "_id": "6804fcadb89e32c7647165bb",
+// "name": "Cloud Computing Seminar",
+// "description": "Explore the latest trends in cloud infrastructure, DevOps, and AWS services through expert talks and demos.",
+// "date": "2025-08-20T00:00:00.000Z",
+// "time": "11:00 AM",
+// "location": "Seminar Room, CS Department",
+// "imgurl": "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
+// "googlelink": "https://www.google.com/maps?q=cs+department+seminar+room",
+// "__v": 0
 
 const budgetData = [
   { name: "Hackathon", planned: 5000, actual: 4800 },
