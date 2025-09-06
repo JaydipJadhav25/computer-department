@@ -15,6 +15,8 @@ interface AuthContextProps extends AuthState {
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+
+  
     const [auth, setAuth] = useState<AuthState>({
       isAuthenticated: false,
       role: null,

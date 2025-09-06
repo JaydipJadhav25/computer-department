@@ -14,7 +14,7 @@ function Navbar() {
 
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const {isAuthenticated , role} = useAuth();
+  const {isAuthenticated , role } = useAuth();
 
 
   console.log( "isAuthenticated ",isAuthenticated );

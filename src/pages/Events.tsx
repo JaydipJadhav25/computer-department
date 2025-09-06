@@ -39,9 +39,10 @@ export default function Events() {
     },
     gcTime : 300000,
     staleTime : 300000
-  })
-console.log("error: ",error);
-console.log("data : ",data);
+  });
+  
+// console.log("error: ",error);
+// console.log("data : ",data);
 
   return (
     <div className="min-h-screen flex flex-col">

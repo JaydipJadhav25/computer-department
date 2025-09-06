@@ -35,7 +35,7 @@ const EventCard = ({ event }: { event: EventProps }) => {
     maxCapacity,
     tags
   } = event;
-  console.log("EventCard", imgurl);
+  // console.log("EventCard", imgurl);
   
 
   // Combine date + time
@@ -134,7 +134,7 @@ const isUpcoming = new Date(date) > new Date();
 
 
 
-console.log("upcoming events : ", isUpcoming);
+// console.log("upcoming events : ", isUpcoming);
 // const formattedDate = format(dateTime, "PPP");
 // const formattedTime = format(dateTime, "p");
 

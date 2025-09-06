@@ -21,7 +21,7 @@ const Announcements = ({
     <div className="space-y-4">
       <div className="space-y-3">
         {displayedAnnouncements.map((announcement) => (
-          <AnnouncementCard key={announcement.id} announcement={announcement} />
+          <AnnouncementCard key={announcement?.id} announcement={announcement} />
         ))}
       </div>
       

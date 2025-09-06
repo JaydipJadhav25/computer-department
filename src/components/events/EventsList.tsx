@@ -11,7 +11,7 @@ const EventsList = ({ events }: EventsListProps) => {
   const [filter, setFilter] = useState("all");
 
 
-  console.log("events ara came from events in eventsList : " , events);
+  // console.log("events ara came from events in eventsList : " , events);
   
   // const now = new Date();
   // const upcomingEvents = events.filter((event) => event.date > now);
@@ -23,8 +23,8 @@ const EventsList = ({ events }: EventsListProps) => {
 const upcomingEvents = events.filter((event) => new Date(event.date) > now);
 const pastEvents = events.filter((event) => new Date(event.date) <= now);
 
-console.log("Upcoming:", upcomingEvents);
-console.log("Past:", pastEvents);
+// console.log("Upcoming:", upcomingEvents);
+// console.log("Past:", pastEvents);
 
 
 
@@ -37,7 +37,7 @@ console.log("Past:", pastEvents);
       : events;
 
 
-      console.log("filteredEvents ", filteredEvents );
+      // console.log("filteredEvents ", filteredEvents );
   return (
     <div className="space-y-6">
       <Tabs defaultValue="all" onValueChange={setFilter}>

@@ -13,6 +13,11 @@ import { ResponsiveContainer, XAxis, YAxis, Tooltip, Bar, BarChart as Chart } fr
 // import axios from "axios";
 import { axiosInstance } from "@/config/axiosConfig";
 
+
+const auth = localStorage.getItem("aces_auth");
+console.log("dasshbord auth : ", auth);
+
+
 // const upcomingEvents: EventProps[] = [
 //   {
 //     id: "1",
@@ -230,7 +235,7 @@ const Dashboard = () => {
               <div className="max-w-3xl mx-auto">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-semibold">All Announcements</h2>
-                  <Button>New Announcement</Button>
+                  { auth && <Button>New Announcement</Button>}
                 </div>
                 <Announcements announcements={announcements} limit={100} showViewAll={false} />
               </div>
@@ -240,7 +245,7 @@ const Dashboard = () => {
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-semibold">Manage Events</h2>
-                  <Button>Create Event</Button>
+                  {auth && <Button>Create Event</Button>}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -255,7 +260,7 @@ const Dashboard = () => {
               <div className="space-y-8">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-semibold">Budget & Expenses</h2>
-                  <Button>Add Expense</Button>
+                 {auth &&  <Button>Add Expense</Button>}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
