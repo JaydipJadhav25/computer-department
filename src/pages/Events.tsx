@@ -40,8 +40,8 @@ export default function Events() {
     gcTime : 300000,
     staleTime : 300000
   });
-  
-// console.log("error: ",error);
+
+console.log("error: ",error);
 // console.log("data : ",data);
 
   return (
@@ -73,7 +73,8 @@ export default function Events() {
           {/* handle error case  */}
           {isError ?
           <>
-          <p className="text-center text-red-500">check your network connection or try again later</p>
+          <p className="text-center text-red-500">check your network connection or try again later </p>
+
           </> 
           :<>
             <EventsList events={data} />
