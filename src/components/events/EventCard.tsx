@@ -2,11 +2,11 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
-import { format } from "date-fns";
+// import { format } from "date-fns";
 
 // Matching backend schema
 export interface EventProps {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   date: string; // ISO string
@@ -99,37 +99,81 @@ const EventCard = ({ event }: { event: EventProps }) => {
 
 
 
-let dateTime: Date;
+// let dateTime: Date;
 
-try {
-  let datePart: string;
+// try {
+//   let datePart: string;
 
-  if (typeof date === "string") {
-    datePart = date.split("T")[0]; // OK if date is string like "2025-08-08T..."
-  } else if (date instanceof Date) {
-    datePart = date?.toISOString().split("T")[0]; // convert to ISO string first
-  } else {
-    throw new Error("Invalid date format");
-  }
+//   if (typeof date === "string") {
+//     datePart = date.split("T")[0]; // OK if date is string like "2025-08-08T..."
+//   } else if (date instanceof Date) {
+//     datePart = date?.toISOString().split("T")[0]; // convert to ISO string first
+//   } else {
+//     throw new Error("Invalid date format");
+//   }
 
-  const timePart = time ?? "00:00"; // fallback to midnight
-  dateTime = new Date(`${datePart}T${timePart}`);
+//   const timePart = time ?? "00:00"; // fallback to midnight
+//   dateTime = new Date(`${datePart}T${timePart}`);
 
-  if (isNaN(dateTime.getTime())) {
-    console.warn("Invalid dateTime. Falling back to current time.");
-    dateTime = new Date();
-  }
-} catch (e) {
-  console.error("Error creating dateTime:", e);
-  dateTime = new Date();
-}
+//   if (isNaN(dateTime.getTime())) {
+//     console.warn("Invalid dateTime. Falling back to current time.");
+//     dateTime = new Date();
+//   }
+// } catch (e) {
+//   console.error("Error creating dateTime:", e);
+//   dateTime = new Date();
+// }
 // const isUpcoming = dateTime > new Date();
-const isUpcoming =true;
+// const isUpcoming =true;
 // console.log("datatime", dateTime);
 
+//date convert in obj then compare
+const isUpcoming = new Date(date) > new Date();
+
+
+
+
 console.log("upcoming events : ", isUpcoming);
-const formattedDate = format(dateTime, "PPP");
-const formattedTime = format(dateTime, "p");
+// const formattedDate = format(dateTime, "PPP");
+// const formattedTime = format(dateTime, "p");
+
+
+//formate 
+
+// const formatDate = (dateString) => {
+//   const date = new Date(dateString);
+//   return date.toLocaleDateString("en-US", {
+//     day: "numeric",
+//     month: "short",
+//     year: "numeric",
+//   });
+// };
+
+// const formatTime = (dateString) => {
+//   const date = new Date(dateString);
+//   return date.toLocaleTimeString("en-US", {
+//     hour: "2-digit",
+//     minute: "2-digit",
+//     hour12: true,
+//   });
+// };
+
+// // Usage:
+// <p>{formatDate(event.date)} at {formatTime(event.date)}</p>
+
+
+
+
+const formatDate = (dateString : string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+
 
 
 
@@ -158,11 +202,12 @@ const formattedTime = format(dateTime, "p");
         <div className="space-y-2 text-sm">
           <div className="flex items-center">
             <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-            <span>{formattedDate}</span>
+            {/* <span>{date}</span> */}
+            <span>{formatDate(date)}</span>
           </div>
           <div className="flex items-center">
             <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
-            <span>{formattedTime}</span>
+            <span>{time}</span>
           </div>
           <div className="flex items-center">
             <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
