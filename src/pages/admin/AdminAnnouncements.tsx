@@ -1,0 +1,180 @@
+import React, { useState, useEffect } from "react";
+import AdminLayout from "@/components/admin/AdminLayout";
+import { Button } from "@/components/ui/button";
+import { Plus, Search, Clock, Pencil, Trash } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { format } from "date-fns";
+// import { number } from "framer-motion";
+
+const categoryColors: Record<string, string> = {
+  event: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+  general: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300",
+  important: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+  notice: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300",
+};
+
+interface Announcement{
+    _id: string;
+    title: string;
+description: string;
+date: string;
+__v: number;
+}
+
+const AdminAnnouncements = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({ title: "", description: "", date: "" });
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+
+  // Fetch announcements from backend
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const res = await fetch("https://compute-department-backend.vercel.app/open/announcements");
+        const data = await res.json();
+        setAnnouncements(data);
+      } catch (error) {
+        console.error("Failed to fetch announcements", error);
+      }
+    };
+
+    fetchAnnouncements();
+  }, []);
+
+  const filteredAnnouncements = announcements.filter((announcement: any) =>
+    announcement.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    announcement.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const { title, description, date } = formData;
+
+    if (!title || !description || !date) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:3000/admin/announcements", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, description, date }),
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        alert("Announcement added successfully!");
+        setFormData({ title: "", description: "", date: "" });
+        setShowForm(false);
+        setAnnouncements((prev : any) => [...prev, result]); // update UI immediately
+      } else {
+        alert(result.error || "Failed to add announcement");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Server error. Try again later.");
+    }
+  };
+
+  return (
+    <AdminLayout currentPage="announcements">
+      <div className="space-y-6">
+        {/* Search + Button */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search announcements..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-8"
+            />
+          </div>
+          <Button onClick={() => setShowForm(true)}>
+            <Plus className="mr-2 h-4 w-4" /> New Announcement
+          </Button>
+        </div>
+
+        {/* Announcements */}
+        <div className="grid grid-cols-1 gap-6">
+          {filteredAnnouncements.map((announcement: any) => (
+            <Card key={announcement._id} className="p-6 border shadow-sm">
+              <div className="flex flex-col gap-4">
+                <div className="flex justify-between">
+                  <div className="flex items-start gap-2">
+                    <h3 className="text-lg font-semibold">{announcement.title}</h3>
+                    {announcement.category && (
+                      <Badge variant="outline" className={categoryColors[announcement.category] || ""}>
+                        {announcement.category}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="icon">
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon">
+                      <Trash className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground">{announcement.description}</p>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  <span>{format(new Date(announcement.date), "d MMM yyyy")}</span>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Form Dialog */}
+        <Dialog open={showForm} onOpenChange={setShowForm}>
+          <DialogContent>
+            <form onSubmit={handleFormSubmit} className="space-y-4">
+              <DialogHeader>
+                <DialogTitle>Add New Announcement</DialogTitle>
+              </DialogHeader>
+
+              <Input
+                placeholder="Title"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+              />
+              <Textarea
+                placeholder="Description"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+              />
+              <Input
+                type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleInputChange}
+              />
+
+              <DialogFooter>
+                <Button type="submit">Submit</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export default AdminAnnouncements;

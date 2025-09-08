@@ -16,12 +16,20 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
-  
+      const storedAuth = localStorage.getItem("aces_auth");
+      //  const parsedAuth = JSON.parse(storedAuth!);
+
+     const parsedAuth = JSON.parse(storedAuth ?? "{}");
+
+  //direxty inilizations with exsiting storAuth
     const [auth, setAuth] = useState<AuthState>({
-      isAuthenticated: false,
-      role: null,
-      username: null,
+           isAuthenticated: parsedAuth?.isAuthenticated || false,
+          role: parsedAuth?.role || null,
+          username: parsedAuth?.username || null,
     });
+
+
+    console.log("inilizations........................")
 
   useEffect(() => {
     // Check local storage for existing auth on app load
@@ -29,11 +37,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (storedAuth) {
       try {
         const parsedAuth = JSON.parse(storedAuth);
-        setAuth({
-          isAuthenticated: parsedAuth.isAuthenticated || false,
+        // setAuth({
+        //   isAuthenticated: parsedAuth.isAuthenticated || false,
+        //   role: parsedAuth.role || null,
+        //   username: parsedAuth.username || null,
+        // });
+
+          setAuth(prev => ({
+          ...prev,
+          isAuthenticated: parsedAuth?.isAuthenticated || false,
           role: parsedAuth.role || null,
           username: parsedAuth.username || null,
-        });
+        }));
+
+
+
       } catch (error) {
         // Invalid stored auth, reset to defaults
         console.log("Invalid stored auth, reset to defaults error : " , error);
@@ -41,6 +59,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     }
   }, []);
+
+
+
+    console.log("inilizations. then update.......................")
+
 
   const login = (username: string, role: string) => {
     const authData = {
@@ -50,7 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     // Update state and store in localStorage
-    setAuth(authData);
+    setAuth( authData);
     localStorage.setItem("aces_auth", JSON.stringify(authData));
   };
 
