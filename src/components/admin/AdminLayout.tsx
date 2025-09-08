@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate,  NavLink, useLocation } from "react-router-dom";
-import { LogOut, Users, Calendar, Bell, PieChart, Menu, X } from "lucide-react";
+import { LogOut, Users, Calendar, Bell, PieChart, Menu, X, Home } from "lucide-react";
 // import { Button } from "@/components/ui/button";
 // import {
 //   SidebarProvider,
@@ -90,6 +90,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     { to: "/admin/events", icon: <Calendar className="h-4 w-4" />, label: "Events" },
     { to: "/admin/announcements", icon: <Bell className="h-4 w-4" />, label: "Announcements" },
     { to: "/admin/financials", icon: <PieChart className="h-4 w-4" />, label: "Financials" },
+    { to: "/", icon: <Home className="h-4 w-4" />, label: "home" },
   ];
 
 

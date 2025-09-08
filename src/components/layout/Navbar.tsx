@@ -27,10 +27,12 @@ function Navbar() {
     { title: "Events", path: "/events" },
     { title: "Blogs", path: "/blogs" },
     { title: "Dashboard", path: "/dashboard" },
+    { title: "Admin", path: "/admin" },
   ];
 
   const handleAdminClick = () => {
     if (isAuthenticated && role === "admin") {
+
       navigate("/admin");
     } else {
       navigate("/login");
