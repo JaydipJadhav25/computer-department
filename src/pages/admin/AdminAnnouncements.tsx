@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Plus, Search, Clock, Pencil, Trash } from "lucide-react";
@@ -8,7 +8,12 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { format } from "date-fns";
+import { axiosInstance } from "@/config/axiosConfig";
+import { useMutation, useQuery  , useQueryClient} from "@tanstack/react-query";
 // import { number } from "framer-motion";
+import {useForm} from "react-hook-form"
+
+
 
 const categoryColors: Record<string, string> = {
   event: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
@@ -17,75 +22,125 @@ const categoryColors: Record<string, string> = {
   notice: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300",
 };
 
-interface Announcement{
-    _id: string;
-    title: string;
-description: string;
-date: string;
-__v: number;
-}
+// interface Announcement{
+//     _id: string;
+//     title: string;
+// description: string;
+// date: string;
+// __v: number;
+// }
 
 const AdminAnnouncements = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({ title: "", description: "", date: "" });
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+ 
 
-  // Fetch announcements from backend
-  useEffect(() => {
-    const fetchAnnouncements = async () => {
-      try {
-        const res = await fetch("https://compute-department-backend.vercel.app/open/announcements");
-        const data = await res.json();
-        setAnnouncements(data);
-      } catch (error) {
-        console.error("Failed to fetch announcements", error);
-      }
-    };
+const {register , handleSubmit , reset} = useForm();
+  const queryClient = useQueryClient();
 
-    fetchAnnouncements();
-  }, []);
+  //react-query
+const { isError, isLoading, data, error } = useQuery({
+  queryKey: ["adminanncements"],
+  queryFn: async () => {
+    const response = await axiosInstance("/open/announcements");
+    console.log("api call ......................................");
+    return response.data;
+  },
+  staleTime: 5 * 60 * 1000,      // 5 minutes = 300000 ms
+  gcTime: 5 * 60 * 1000,         // cache garbage collect after 5 min
+  refetchOnWindowFocus: false,   // don't refetch when switching tabs
+  refetchOnReconnect: false,     // don't refetch on network reconnect
+  refetchOnMount: false,         // don't refetch on remount
+});
 
-  const filteredAnnouncements = announcements.filter((announcement: any) =>
-    announcement.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    announcement.description?.toLowerCase().includes(searchTerm.toLowerCase())
+
+
+ const mutation = useMutation({
+    mutationFn : async(formData)=>{
+     const responce = await axiosInstance.post("/admin/announcements" ,formData );
+    return responce.data;
+    },
+    onSuccess : (data : any)=>{
+          console.log("annceuncement add successfully : " , data);
+         alert("Announcement add successfully ")
+          
+          // refresh the members list
+        
+          queryClient.invalidateQueries({ queryKey: ["adminanncements"] });
+ //close         
+ setShowForm(false);
+        
+      // clear form after success
+      reset();
+    } ,
+    onError : (error)=>{
+         console.error("Error adding anncements:", error);
+         alert("Error adding anncements:");
+         // clear form after success
+      reset();
+    }
+  });
+
+
+  // form 
+ function handleFormSubmit(formData : any){
+  mutation.mutate(formData);
+ } 
+
+
+
+
+  const filteredAnnouncements = data?.filter((announcement: any) =>
+    announcement?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    announcement?.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
 
-    const { title, description, date } = formData;
 
-    if (!title || !description || !date) {
-      alert("Please fill all fields");
-      return;
-    }
 
-    try {
-      const res = await fetch("http://localhost:3000/admin/announcements", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description, date }),
-      });
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  //   setFormData({ ...formData, [e.target.name]: e.target.value });
+  // };
 
-      const result = await res.json();
-      if (res.ok) {
-        alert("Announcement added successfully!");
-        setFormData({ title: "", description: "", date: "" });
-        setShowForm(false);
-        setAnnouncements((prev : any) => [...prev, result]); // update UI immediately
-      } else {
-        alert(result.error || "Failed to add announcement");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Server error. Try again later.");
-    }
-  };
+  // const handleFormSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   const { title, description, date } = formData;
+
+  //   if (!title || !description || !date) {
+  //     alert("Please fill all fields");
+  //     return;
+  //   }
+
+  //   try {
+  //     const res = await fetch("http://localhost:3000/admin/announcements", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ title, description, date }),
+  //     });
+
+  //     const result = await res.json();
+  //     if (res.ok) {
+  //       alert("Announcement added successfully!");
+  //       setFormData({ title: "", description: "", date: "" });
+  //       setShowForm(false);
+  //       //setAnnouncements((prev : any) => [...prev, result]); // update UI immediately
+
+
+
+  //     } else {
+  //       alert(result.error || "Failed to add announcement");
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Server error. Try again later.");
+  //   }
+  // };
+
+
+
+
 
   return (
     <AdminLayout currentPage="announcements">
@@ -99,6 +154,7 @@ const AdminAnnouncements = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-8"
+              disabled={isLoading || isError}
             />
           </div>
           <Button onClick={() => setShowForm(true)}>
@@ -108,7 +164,16 @@ const AdminAnnouncements = () => {
 
         {/* Announcements */}
         <div className="grid grid-cols-1 gap-6">
-          {filteredAnnouncements.map((announcement: any) => (
+
+        {
+          isLoading ? <>
+                  <h1 className="text-center text-green-800">Loading...</h1>
+          </>:<>
+               {
+                isError ? <>
+                         <h1 className="text-center red-green-800">{error?.message}</h1>
+                  </>:<>
+                        {filteredAnnouncements.map((announcement: any) => (
             <Card key={announcement._id} className="p-6 border shadow-sm">
               <div className="flex flex-col gap-4">
                 <div className="flex justify-between">
@@ -137,37 +202,42 @@ const AdminAnnouncements = () => {
               </div>
             </Card>
           ))}
+                  
+                  </>
+               }
+          </>
+        }
+       
         </div>
 
         {/* Form Dialog */}
         <Dialog open={showForm} onOpenChange={setShowForm}>
           <DialogContent>
-            <form onSubmit={handleFormSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
               <DialogHeader>
                 <DialogTitle>Add New Announcement</DialogTitle>
               </DialogHeader>
 
               <Input
                 placeholder="Title"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
+               {...register("title")}
               />
               <Textarea
                 placeholder="Description"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
+                {...register("description")}
               />
               <Input
                 type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleInputChange}
+                {...register("date")}
               />
-
               <DialogFooter>
-                <Button type="submit">Submit</Button>
+                <Button
+                disabled={mutation.isPending}
+                type="submit">
+                  {
+                    mutation.isPending ? "adding...." : "Submit"
+                  }
+                  </Button>
               </DialogFooter>
             </form>
           </DialogContent>

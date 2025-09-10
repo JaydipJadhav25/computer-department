@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,9 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { axiosInstance } from "@/config/axiosConfig";
 
 // Define type for event
 interface Event {
@@ -32,74 +35,135 @@ interface Event {
 
 
 const AdminEvents = () => {
-  const [eventData, setEventData] = useState<Event[]>([]);
+  // const [eventData, setEventData] = useState<Event[]>([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    date: "",
-    time: "",
-    location: "",
-    imgurl: "",
-    googlelink: "",
-  });
+
+  // const [loading, setLoading] = useState(false);
+  // const [formData, setFormData] = useState({
+  //   name: "",
+  //   description: "",
+  //   date: "",
+  //   time: "",
+  //   location: "",
+  //   imgurl: "",
+  //   googlelink: "",
+  // });
 
   // Fetch all events from backend
-  const fetchEvents = async () => {
-    try {
-      const res = await fetch("https://compute-department-backend.vercel.app/open/events");
-      const data = await res.json();
+  // const fetchEvents = async () => {
+  //   try {
+  //     const res = await fetch("https://compute-department-backend.vercel.app/open/events");
+  //     const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || "Failed to fetch events");
-      setEventData(data);
-    } catch (error) {
-      console.error("Error fetching events:", error);
-      alert("Failed to load events.");
-    }
-  };
+  //     if (!res.ok) throw new Error(data.error || "Failed to fetch events");
+  //     setEventData(data);
+  //   } catch (error) {
+  //     console.error("Error fetching events:", error);
+  //     alert("Failed to load events.");
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
+  // useEffect(() => {
+  //   fetchEvents();
+  // }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({ ...prev, [name]: value }));
+  // };
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("http://localhost:3000/admin/events", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+  // const handleSubmit = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await fetch("http://localhost:3000/admin/events", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(formData),
+  //     });
 
-      const data = await res.json();
+  //     const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.error || "Something went wrong");
+  //     if (!res.ok) {
+  //       throw new Error(data.error || "Something went wrong");
+  //     }
+
+  //     alert("Event created successfully!");
+  //     setOpen(false);
+  //     fetchEvents(); // Refresh list
+  //   } catch (error: any) {
+  //     alert(`Failed to create event: ${error.message}`);
+  //     console.error("Create Event Error:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+
+  
+  const {register , handleSubmit , reset} = useForm<Event>();
+    const queryClient = useQueryClient();
+  
+    //react-query
+  const { isError, isLoading, data } = useQuery({
+    queryKey: ["adminevents"],
+    queryFn: async () => {
+      const response = await axiosInstance("/open/events");
+      console.log("api call ......................................");
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,      // 5 minutes = 300000 ms
+    gcTime: 5 * 60 * 1000,         // cache garbage collect after 5 min
+    refetchOnWindowFocus: false,   // don't refetch when switching tabs
+    refetchOnReconnect: false,     // don't refetch on network reconnect
+    refetchOnMount: false,         // don't refetch on remount
+  });
+  
+  
+  
+   const mutation = useMutation({
+      mutationFn : async(formData)=>{
+       const responce = await axiosInstance.post("/admin/events" ,formData );
+      return responce.data;
+      },
+      onSuccess : (data : any)=>{
+            console.log("Event add successfully : " , data);
+           alert("Events add successfully ")
+            
+            // refresh the members list
+          
+            queryClient.invalidateQueries({ queryKey: ["adminevents"] });
+              //close         
+              setOpen(false);
+          
+        // clear form after success
+        reset();
+      } ,
+      onError : (error)=>{
+           console.error("Error adding Events", error);
+           alert("Error adding Events...! ");
+           // clear form after success
+        reset();
       }
+    });
+  
+  
+    // form 
+   function handleFormSubmit(formData : any){
+    mutation.mutate(formData);
+   } 
+  
+  
 
-      alert("Event created successfully!");
-      setOpen(false);
-      fetchEvents(); // Refresh list
-    } catch (error: any) {
-      alert(`Failed to create event: ${error.message}`);
-      console.error("Create Event Error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const filteredEvents  = eventData.filter(
-    (event) =>
+
+
+  const filteredEvents  = data?.filter(
+    (event : any) =>
       event?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event?.location?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -116,15 +180,24 @@ const AdminEvents = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-8"
+              disabled={isLoading || isError}
             />
           </div>
-          <Button onClick={() => setOpen(true)}>
+          <Button onClick={() => setOpen(true)} disabled={isLoading || isError}>
             <Plus className="mr-2 h-4 w-4" /> Create Event
           </Button>
         </div>
 
         <div className="grid grid-cols-1 gap-6">
-          {filteredEvents.map((event: any) => (
+            {
+              isLoading ? <>
+                   <h1 className="text-green-600 text-center">Loading....</h1>
+              </> :<>
+                       {
+                        isError ? <>
+                             <h1 className="red-green-600 text-center">Events fetch error ! Check your netWork Connections</h1>
+                         </>:<>
+                          {filteredEvents.map((event: any) => (
             <Card key={event._id || event.id} className="p-6 border shadow-sm">
               <div className="flex flex-col md:flex-row justify-between gap-4">
                 <div>
@@ -182,8 +255,15 @@ const AdminEvents = () => {
               </div>
             </Card>
           ))}
+
+                         </>
+                       }
+               </>
+            }
         </div>
       </div>
+
+
 
       {/* Create Event Modal */}
       <Dialog open={open} onOpenChange={setOpen}>
@@ -200,58 +280,56 @@ const AdminEvents = () => {
                 </button>
               </div>
               <div className="space-y-3">
-                <Input
-                  name="name"
+                   <form onSubmit={handleSubmit(handleFormSubmit)} >
+                       <Input
+                  
                   placeholder="Event Name"
-                  value={formData.name}
-                  onChange={handleChange}
+                 {...register("name")}
                 />
                 <Input
-                  name="description"
+                
                   placeholder="Description"
-                  value={formData.description}
-                  onChange={handleChange}
+                  {...register("description")}
+
                 />
                 <Input
-                  name="date"
+                
                   type="date"
-                  value={formData.date}
-                  onChange={handleChange}
+                  {...register("date")}
+                  
                 />
                 <Input
-                  name="time"
+              
                   type="time"
-                  value={formData.time}
-                  onChange={handleChange}
+                  {...register("time")}
+                 
                 />
                 <Input
-                  name="location"
+                
                   placeholder="Location"
-                  value={formData.location}
-                  onChange={handleChange}
+                  {...register("location")}
+                  
                 />
                 <Input 
-                name="imgurl"
+                
                 placeholder="Image URL"
-                value={formData.imgurl}
-                onChange={handleChange}
-
+                  {...register("imgurl")}
                 />
                 
                 <Input
-                  name="googlelink"
+                  
                   placeholder="Google Maps Link"
-                  value={formData.googlelink}
-                  onChange={handleChange}
+                  {...register("googlelink")}
+                 
                 />
 
                 <Button
-                  onClick={handleSubmit}
-                  disabled={loading}
+                  disabled={mutation.isPending}
                   className="w-full"
                 >
-                  {loading ? "Creating..." : "Create Event"}
+                  {mutation.isPending ? "Creating..." : "Create Event"}
                 </Button>
+                   </form>
               </div>
             </div>
           </div>

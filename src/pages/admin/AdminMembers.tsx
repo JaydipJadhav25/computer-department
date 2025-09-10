@@ -47,7 +47,6 @@ const { isError, isLoading, data, error } = useQuery({
 const{register , handleSubmit  , reset} = useForm();
 
 
-console.log("Error , isLoading , data ,error" , isError , isLoading , data ,error)
 
   // Fetch members from backend
   // const fetchMembers = async () => {
@@ -138,8 +137,8 @@ console.log("Error , isLoading , data ,error" , isError , isLoading , data ,erro
 
   //filter
   const filteredMembers = data?.filter((member: any) =>
-    member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    member.role.toLowerCase().includes(searchTerm.toLowerCase())
+    member?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    member?.role.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
