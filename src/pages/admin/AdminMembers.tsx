@@ -1,15 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Plus, Search, Pencil, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import {useQuery} from "@tanstack/react-query"
+import { axiosInstance } from "@/config/axiosConfig";
+import{useForm} from "react-hook-form"
+
+
+
 
 const AdminMembers = () => {
-  const [members, setMembers] = useState([]);
+  // const [members, setMembers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,42 +26,64 @@ const AdminMembers = () => {
     imgurl:"",
   });
 
+//react-query
+  const {isError , isLoading , data ,error} = useQuery({
+    queryKey : ["members"],
+    queryFn : async()=>{
+            const response = await axiosInstance("/open/members");
+            return response.data;
+    },
+    gcTime : 300000,
+    staleTime : 300000
+  })
+
+//react-hook-form
+const{register , handleSubmit } = useForm();
+
+
+console.log("Error , isLoading , data ,error" , isError , isLoading , data ,error)
+
   // Fetch members from backend
-  const fetchMembers = async () => {
-    try {
-      const res = await fetch("https://compute-department-backend.vercel.app/open/members");
-      const data = await res.json();
-      setMembers(data);
-    } catch (error) {
-      console.error("Failed to fetch members:", error);
-    }
-  };
+  // const fetchMembers = async () => {
+  //   try {
+  //     const res = await fetch("https://compute-department-backend.vercel.app/open/members");
+  //     const data = await res.json();
+  //     setMembers(data);
+  //   } catch (error) {
+  //     console.error("Failed to fetch members:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchMembers();
-  }, []);
+  // useEffect(() => {
+  //   fetchMembers();
+  // }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({ ...prev, [name]: value }));
+  // };
 
-  const handleSubmit = async () => {
+  const handleFormSubmit = async (data :any) => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/admin/members", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      // const res = await fetch("http://localhost:3000/admin/members", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(formData),
+      // });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to add member");
+      // const data = await res.json();
+      // if (!res.ok) throw new Error(data.error || "Failed to add member");
 
-      alert("Member added successfully");
-      setFormData({ name: "", email: "", role: "", year: "", imgurl: "" });
+      // alert("Member added successfully");
+      // setFormData({ name: "", email: "", role: "", year: "", imgurl: "" });
+      // setOpen(false);
+      //fetchMembers(); // Refresh list
+
+      console.log("data is : " , data);
       setOpen(false);
-      fetchMembers(); // Refresh list
+       
+
     } catch (error: any) {
       alert(`Error: ${error.message}`);
     } finally {
@@ -61,7 +91,8 @@ const AdminMembers = () => {
     }
   };
 
-  const filteredMembers = members.filter((member: any) =>
+  //filter
+  const filteredMembers = data?.filter((member: any) =>
     member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     member.role.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -78,9 +109,10 @@ const AdminMembers = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-8"
+              disabled={isError || isLoading}
             />
           </div>
-          <Button onClick={() => setOpen(true)}>
+          <Button onClick={() => setOpen(true)} disabled={isLoading}>
             <Plus className="mr-2 h-4 w-4" /> Add Member
           </Button>
         </div>
@@ -88,7 +120,14 @@ const AdminMembers = () => {
         {/* Members Table */}
         <Card className="border shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            
+         { isLoading ? <h1 className="text-center text-green-800">Loading..</h1>
+            : <>
+               {
+              isError ? <>
+                   <h1 className="text-center text-red-800">{error?.message}</h1>
+              </>:
+              <table className="w-full text-sm">
               <thead>
                 <tr className="border-b bg-muted/50">
                   <th className="h-10 px-4 text-left font-medium text-muted-foreground">Name</th>
@@ -99,7 +138,7 @@ const AdminMembers = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredMembers.map((member: any) => (
+                {filteredMembers?.map((member: any) => (
                   <tr key={member._id} className="border-b hover:bg-muted/50 transition-colors">
                     <td className="p-4">{member.name}</td>
                     <td className="p-4">{member.role}</td>
@@ -119,7 +158,10 @@ const AdminMembers = () => {
                 ))}
               </tbody>
             </table>
-          </div>
+             }
+            </>
+}
+               </div>
         </Card>
 
         {/* Add Member Modal */}
@@ -131,41 +173,35 @@ const AdminMembers = () => {
             <div
               className="bg-background p-6 rounded-xl max-w-md w-full shadow-lg space-y-4"
               onClick={(e) => e.stopPropagation()}
+              
             >
               <h2 className="text-xl font-semibold">Add New Member</h2>
-              <Input
-                name="name"
+              <form onSubmit={handleSubmit(handleFormSubmit)}>
+                  <Input
                 placeholder="Full Name"
-                value={formData.name}
-                onChange={handleChange}
+                {...register("name")}
               />
               <Input
-                name="email"
                 type="email"
                 placeholder="Email"
-                value={formData.email}
-                onChange={handleChange}
+                {...register("email")}
               />
               <Input
-                name="role"
+                
                 placeholder="Role"
-                value={formData.role}
-                onChange={handleChange}
+               {...register("role")}
               />
               <Input
-                name="year"
+               
                 placeholder="Year (e.g. Third Year)"
-                value={formData.year}
-                onChange={handleChange}
+                {...register("year")}
               />
               <Input
-                name="imgurl"
                 placeholder="Image URL"
-                value={formData.imgurl}
-                onChange={handleChange}
+                {...register("imgurl")}
               />
-              <Button className="w-full" onClick={handleSubmit} disabled={loading}>
-                {loading ? "Adding..." : "Add Member"}
+              <Button className="w-full" disabled={loading}>
+                {loading? "Adding..." : "Add Member"}
               </Button>
               <Button
                 variant="ghost"
@@ -174,6 +210,8 @@ const AdminMembers = () => {
               >
                 Cancel
               </Button>
+              </form>
+              
             </div>
           </div>
         )}
