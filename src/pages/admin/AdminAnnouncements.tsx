@@ -109,6 +109,40 @@ const { isError, isLoading, data, error } = useQuery({
          alert("Announcement Delete member!");
     }
 
+  });
+
+
+
+   //use mutation  update announcement
+  const mutationUpdate = useMutation({
+     mutationFn : async(data)=>{
+      console.log("data : " , data);
+         const response = await axiosInstance.post("/admin/announcement/update" ,  data );
+         return response.data;
+
+        // console.log("data update hit : " , data)
+        // return data
+     },
+     onSuccess : (data)=>{
+       console.log("announcement update successfully......." , data);
+            alert("Announcement update Successfully !");
+     
+          // refresh the 
+          queryClient.invalidateQueries({ queryKey: ["adminanncements"] });
+
+          //close form
+          setUpdateForm(false);
+          setOldAccouncement(null);
+          //reset data
+          reset();
+
+     },
+
+      onError : (error)=>{
+         console.error("Error announcement update member:", error);
+         alert("Announcement Update member!");
+    }
+
   })
 
 
@@ -116,6 +150,15 @@ const { isError, isLoading, data, error } = useQuery({
  function handleFormSubmit(formData : any){
   mutation.mutate(formData);
  } 
+
+ //upodate from
+ function handleUpdate (data : any){
+  const updateAnnouncement = {
+    id : oldAnnouncement._id ,
+     ...data
+  }
+  mutationUpdate.mutate(updateAnnouncement);
+ }
 
 
  console.log("old announcement : " , oldAnnouncement);
@@ -168,9 +211,6 @@ const { isError, isLoading, data, error } = useQuery({
   //     alert("Server error. Try again later.");
   //   }
   // };
-
-
-
 
 
   return (
@@ -287,7 +327,6 @@ const { isError, isLoading, data, error } = useQuery({
 
         {/* update announcement */}
          <Dialog 
-         
          open={updateForm} onOpenChange={()=>{
           setUpdateForm(false);
           setOldAccouncement(null);
@@ -296,7 +335,7 @@ const { isError, isLoading, data, error } = useQuery({
               onInteractOutside={(e) => e.preventDefault()}   // disable backdrop close
               onEscapeKeyDown={(e) => e.preventDefault()}     // disable Esc close
           >
-            <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(handleUpdate)} className="space-y-4">
               <DialogHeader>
                 <DialogTitle>Update Announcement</DialogTitle>
               </DialogHeader>
@@ -305,11 +344,16 @@ const { isError, isLoading, data, error } = useQuery({
                 placeholder="Title"
                {...register("title")}
               />
+
+              <p className="text-sm text-yellow-900">{oldAnnouncement?.description}</p>
+
               <Textarea
               
                 placeholder="Description"
                 {...register("description")}
               />
+              <p className="text-sm text-yellow-900">{oldAnnouncement?.date}</p>
+              
               <Input
                 type="date"
               
@@ -317,18 +361,16 @@ const { isError, isLoading, data, error } = useQuery({
               />
               <DialogFooter>
                 <Button
-                disabled={mutation.isPending}
+                disabled={ mutationUpdate.isPending }
                 type="submit">
                   {
-                    mutation.isPending ? "adding...." : "Submit"
+                    mutationUpdate.isPending ? "updating...." : "Submit"
                   }
                   </Button>
               </DialogFooter>
             </form>
           </DialogContent>
         </Dialog>
-
-
       </div>
     </AdminLayout>
   );

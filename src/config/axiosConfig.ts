@@ -1,9 +1,6 @@
 import axios from "axios"
 
 
-
-
-
 export const axiosInstance = axios.create({
     // baseURL: process.env.REACT_APP_API_BASE_URL, //this is use for react
     // baseURL : "http://localhost:5000",
@@ -12,3 +9,4 @@ export const axiosInstance = axios.create({
         'Content-Type': 'application/json',
     },
 });
+
