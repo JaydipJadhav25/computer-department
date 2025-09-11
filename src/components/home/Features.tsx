@@ -75,7 +75,7 @@ console.log("isMobile : " , isMobile);
         <p 
         data-aos="fade-up"
         className="text-muted-foreground">
-          Our platform provides comprehensive tools for ACES committee and students to 
+          Our platform provides comprehensive tools for CESA committee and students to 
           collaborate, stay informed, and manage activities efficiently.
         </p>
       </div>

@@ -142,7 +142,7 @@ const Testimonials = () => {
         </span>
         <h2 className="text-3xl font-bold mt-4 mb-4">What Our Alumni Say</h2>
         <p className="text-muted-foreground">
-          Hear from our alumni about how being part of ACES impacted their academic and professional journey.
+          Hear from our alumni about how being part of CESA impacted their academic and professional journey.
         </p>
       </div>
 
@@ -211,7 +211,7 @@ const Testimonials = () => {
 
 
     <p className="text-muted-foreground text-base">
-      Get the latest announcements, events, and opportunities from ACES.
+      Get the latest announcements, events, and opportunities from CESA.
     </p>
   </div>
 

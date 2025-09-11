@@ -7,7 +7,7 @@ import botAnimation from "../../../public/robot.json";
 export default function ChatBot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { text: "Hi there! I'm ACES 🤖", from: "bot" }
+    { text: "Hi there! I'm CESA 🤖", from: "bot" }
   ]);
   const [input, setInput] = useState("");
 
@@ -35,7 +35,7 @@ export default function ChatBot() {
           {/* Header */}
           <div className="p-3 bg-gradient-to-r from-black to-indigo-800 text-white rounded-t-2xl flex items-center gap-3">
             <Lottie loop play animationData={botAnimation} style={{ width: 40, height: 40 }} />
-            <h2 className="font-bold text-lg">ACESBot</h2>
+            <h2 className="font-bold text-lg">CESABot</h2>
             <button
               onClick={() => setOpen(false)}
               className="ml-auto bg-white text-black px-2 py-1 rounded hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"

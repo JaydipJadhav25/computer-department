@@ -124,7 +124,7 @@ const Dashboard = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground">Welcome to ACES portal</p>
+            <p className="text-muted-foreground">Welcome to CESA portal</p>
           </div>
 
           <Tabs value={tab} onValueChange={setTab} className="space-y-6">

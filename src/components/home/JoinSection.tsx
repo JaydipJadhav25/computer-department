@@ -35,7 +35,7 @@ const JoinSection = () => {
                 transform: `rotate(${Math.random() * 10 - 5}deg)`
               }}
             >
-              {"{" + "  "}console.log("Join ACES");{" }"}
+              {"{" + "  "}console.log("Join CESA");{" }"}
             </div>
           ))}
           
@@ -49,7 +49,7 @@ const JoinSection = () => {
         </div>
         
         <div className="relative z-10 p-8 md:p-12 lg:p-16 flex flex-col items-center text-white text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Join ACES?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Join CESA?</h2>
           <p className="text-white/90 max-w-2xl mb-8">
             Become part of our thriving computer engineering community. Access exclusive events, workshops, and networking opportunities to boost your academic and professional journey.
           </p>

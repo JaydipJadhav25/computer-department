@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { ChevronRight,  Users, Terminal } from "lucide-react";
 import { Link } from "react-router-dom";
-// import ChatBot from "../chatBot/ChatBot";
+import ChatBot from "../chatBot/ChatBot";
 // import { motion } from "framer-motion";
 import 'aos/dist/aos.css';
 import AOS from 'aos';
@@ -97,7 +97,7 @@ const Hero = () => {
         </h2>
 
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
-         Association of Computer Engineering Students: Shaping future tech leaders through innovation and collaboration.
+         Computer Engineering Student Association: Shaping future tech leaders through innovation and collaboration.
         </p>
 
         {/* <div className="flex flex-wrap items-center gap-4 pt-4" data-aos="fade-up" data-aos-delay="300"> */}
@@ -197,7 +197,7 @@ const Hero = () => {
     </div>
      }
 
-  {/* <ChatBot /> */}
+  <ChatBot />
 {/* </BackgroundBeamsWithCollision> */}
 </div>
   );

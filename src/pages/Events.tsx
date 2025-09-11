@@ -58,7 +58,7 @@ console.log("error: ",error);
               <h1 className="text-4xl font-bold mb-4">Events & Activities</h1>
               <p className="text-xl text-muted-foreground">
                 Discover upcoming hackathons, workshops, tech talks, and more 
-                organized by ACES for computer department students.
+                organized by CESA for computer department students.
               </p>
             </div>
           </div>
