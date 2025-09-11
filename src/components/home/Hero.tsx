@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { ChevronRight,  Users, Terminal } from "lucide-react";
 import { Link } from "react-router-dom";
-import ChatBot from "../chatBot/ChatBot";
+// import ChatBot from "../chatBot/ChatBot";
 // import { motion } from "framer-motion";
 import 'aos/dist/aos.css';
 import AOS from 'aos';
@@ -197,7 +197,7 @@ const Hero = () => {
     </div>
      }
 
-  <ChatBot />
+  {/* <ChatBot /> */}
 {/* </BackgroundBeamsWithCollision> */}
 </div>
   );

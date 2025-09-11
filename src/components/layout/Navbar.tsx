@@ -43,7 +43,8 @@ function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-lg">
-      <nav className="container mx-auto flex h-16 items-center justify-between px-4">
+      {/* <nav className="container mx-auto flex h-16 items-center justify-between px-4"> */}
+      <nav className="w-full flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center space-x-2">
           <img
             src="/collage_logo.png"

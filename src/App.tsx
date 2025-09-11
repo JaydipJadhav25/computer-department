@@ -1,4 +1,4 @@
-import './App.css'
+// import './App.css'
 import {Route , Routes , BrowserRouter} from "react-router-dom"
 import { AuthProvider } from './components/contexts/AuthContext'
 import Index from './pages/Index'
