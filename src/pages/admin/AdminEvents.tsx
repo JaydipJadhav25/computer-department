@@ -124,7 +124,7 @@ const AdminEvents = () => {
   });
   
   
-  
+  //mutation for create
    const mutation = useMutation({
       mutationFn : async(formData)=>{
        const responce = await axiosInstance.post("/admin/events" ,formData );
@@ -151,6 +151,25 @@ const AdminEvents = () => {
       }
     });
   
+
+    //use mutation -delete
+  const mutationDelete = useMutation({
+     mutationFn : async(id)=>{
+         const response = await axiosInstance.post("/admin/event/delete" , { id});
+         return response.data;
+     },
+     onSuccess : (data)=>{
+       console.log("Event deleted successfully......." , data);
+       alert("Event delete Successfully !");
+       queryClient.invalidateQueries({ queryKey: ["adminevents"] });
+     },
+
+      onError : (error)=>{
+         console.error("Error delete Event:", error);
+         alert("Error Delete Event !");
+    }
+
+  })  
   
     // form 
    function handleFormSubmit(formData : any){
@@ -189,6 +208,7 @@ const AdminEvents = () => {
         </div>
 
         <div className="grid grid-cols-1 gap-6">
+           {mutationDelete.isPending && <h1 className="text-center text-green-800 my-2">Deleting Member....</h1>}
             {
               isLoading ? <>
                    <h1 className="text-green-600 text-center">Loading....</h1>
@@ -247,7 +267,12 @@ const AdminEvents = () => {
                     <Pencil className="mr-2 h-4 w-4" />
                     Edit
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button
+                  disabled={mutationDelete.isPending}
+                  onClick={()=>{
+                    mutationDelete.mutate(event._id || null);
+                  }}
+                  variant="outline" size="sm">
                     <Trash className="mr-2 h-4 w-4" />
                     Delete
                   </Button>
@@ -335,6 +360,8 @@ const AdminEvents = () => {
           </div>
         )}
       </Dialog>
+
+
     </AdminLayout>
   );
 };

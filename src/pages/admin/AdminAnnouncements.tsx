@@ -33,7 +33,11 @@ const categoryColors: Record<string, string> = {
 const AdminAnnouncements = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
- 
+  const [updateForm, setUpdateForm] = useState(false);
+  const[oldAnnouncement , setOldAccouncement] = useState<any>(null);
+
+  //update state
+
 
 const {register , handleSubmit , reset} = useForm();
   const queryClient = useQueryClient();
@@ -54,7 +58,7 @@ const { isError, isLoading, data, error } = useQuery({
 });
 
 
-
+//create
  const mutation = useMutation({
     mutationFn : async(formData)=>{
      const responce = await axiosInstance.post("/admin/announcements" ,formData );
@@ -82,12 +86,39 @@ const { isError, isLoading, data, error } = useQuery({
   });
 
 
+
+  //use mutation -delete // in future i will use optimistic update
+  const mutationDelete = useMutation({
+     mutationFn : async(id)=>{
+         const response = await axiosInstance.post("/admin/announcement/delete" , { id});
+         return response.data;
+     },
+     onSuccess : (data)=>{
+       console.log("announcement deleted successfully......." , data);
+       alert("Announcement delete Successfully !");
+     
+           
+          // refresh the 
+        
+          queryClient.invalidateQueries({ queryKey: ["adminanncements"] });
+
+     },
+
+      onError : (error)=>{
+         console.error("Error announcement member:", error);
+         alert("Announcement Delete member!");
+    }
+
+  })
+
+
   // form 
  function handleFormSubmit(formData : any){
   mutation.mutate(formData);
  } 
 
 
+ console.log("old announcement : " , oldAnnouncement);
 
 
   const filteredAnnouncements = data?.filter((announcement: any) =>
@@ -164,7 +195,8 @@ const { isError, isLoading, data, error } = useQuery({
 
         {/* Announcements */}
         <div className="grid grid-cols-1 gap-6">
-
+            {mutationDelete.isPending && <h1 className="text-center text-green-800 my-2">Deleting Member....</h1>}
+           
         {
           isLoading ? <>
                   <h1 className="text-center text-green-800">Loading...</h1>
@@ -186,10 +218,20 @@ const { isError, isLoading, data, error } = useQuery({
                     )}
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="icon">
+                    <Button
+                    onClick={()=>{
+                      setOldAccouncement(announcement);
+                      setUpdateForm(true);
+                    }}
+                    variant="ghost" size="icon">
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon">
+                    <Button 
+                    disabled={mutationDelete.isPending}
+                    onClick={()=>{
+                      mutationDelete.mutate(announcement._id || null);
+                    }}
+                    variant="ghost" size="icon">
                       <Trash className="h-4 w-4" />
                     </Button>
                   </div>
@@ -242,6 +284,51 @@ const { isError, isLoading, data, error } = useQuery({
             </form>
           </DialogContent>
         </Dialog>
+
+        {/* update announcement */}
+         <Dialog 
+         
+         open={updateForm} onOpenChange={()=>{
+          setUpdateForm(false);
+          setOldAccouncement(null);
+         }}>
+          <DialogContent
+              onInteractOutside={(e) => e.preventDefault()}   // disable backdrop close
+              onEscapeKeyDown={(e) => e.preventDefault()}     // disable Esc close
+          >
+            <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+              <DialogHeader>
+                <DialogTitle>Update Announcement</DialogTitle>
+              </DialogHeader>
+              <p className="text-sm text-yellow-900">{oldAnnouncement?.title}</p>
+              <Input
+                placeholder="Title"
+               {...register("title")}
+              />
+              <Textarea
+              
+                placeholder="Description"
+                {...register("description")}
+              />
+              <Input
+                type="date"
+              
+                {...register("date")}
+              />
+              <DialogFooter>
+                <Button
+                disabled={mutation.isPending}
+                type="submit">
+                  {
+                    mutation.isPending ? "adding...." : "Submit"
+                  }
+                  </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+
       </div>
     </AdminLayout>
   );

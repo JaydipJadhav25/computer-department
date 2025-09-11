@@ -99,7 +99,7 @@ const{register , handleSubmit  , reset} = useForm();
   //   }
   // };
 
-  //use Mutation
+  //use Mutation - create
   const mutation = useMutation({
     mutationFn : async(formData)=>{
      const responce = await axiosInstance.post("/admin/members" ,formData );
@@ -125,15 +125,32 @@ const{register , handleSubmit  , reset} = useForm();
       reset();
     }
   });
+  
+  //use mutation -delete
+  const mutationDelete = useMutation({
+     mutationFn : async(id)=>{
+         const response = await axiosInstance.post("/admin/member/delete" , { id});
+         return response.data;
+     },
+     onSuccess : (data)=>{
+       console.log("member deleted successfully......." , data);
+       alert("Member delete Successfully !");
+      queryClient.invalidateQueries({ queryKey: ["adminmembers"] });
+
+     },
+
+      onError : (error)=>{
+         console.error("Error delete member:", error);
+         alert("Error Delete member!");
+    }
+
+  })
 
 
  //handlefor data and call mutations
  const handleFormSubmit = (data : any)=>{
   mutation.mutate(data);
  } 
-
-
-
 
   //filter
   const filteredMembers = data?.filter((member: any) =>
@@ -164,7 +181,7 @@ const{register , handleSubmit  , reset} = useForm();
         {/* Members Table */}
         <Card className="border shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            
+            {mutationDelete.isPending && <h1 className="text-center text-green-800 my-2">Deleting Member....</h1>}
          { isLoading ? <h1 className="text-center text-green-800">Loading..</h1>
             : <>
                {
@@ -193,7 +210,12 @@ const{register , handleSubmit  , reset} = useForm();
                         <Button variant="ghost" size="icon">
                           <Pencil className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon">
+                        <Button
+                        disabled={mutationDelete.isPending}
+                        onClick={()=>{
+                           mutationDelete.mutate(member?._id || null)
+                        }}
+                        variant="ghost" size="icon">
                           <Trash className="h-4 w-4" />
                         </Button>
                       </div>
@@ -266,7 +288,7 @@ const{register , handleSubmit  , reset} = useForm();
             </div>
           </div>
         )}
-
+        
 
       </div>
     </AdminLayout>
