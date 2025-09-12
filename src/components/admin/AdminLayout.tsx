@@ -17,6 +17,7 @@ import { LogOut, Users, Calendar, Bell, PieChart, Menu, X, Home } from "lucide-r
 // } from "@/components/ui/sidebar";
 import useAuth from "../contexts/useAuth";
 import {toast} from "sonner"
+import { useActivityFunction } from "@/hook/useActivityFunction";
 // import { AppSidebar } from "./AppSidebar";
 
 // interface MenuItem {
@@ -33,7 +34,7 @@ interface AdminLayoutProps {
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
-
+const activityFunction = useActivityFunction();
 
 
   const { isAuthenticated, role, logout } = useAuth();
@@ -49,6 +50,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
   const handleLogout = () => {
     logout();
+    activityFunction("admin Logged out");
     toast("Logged out",
       {
           description: "You have been logged out successfully",

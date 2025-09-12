@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import {useMutation, useQuery, useQueryClient  } from "@tanstack/react-query"
 import { axiosInstance } from "@/config/axiosConfig";
 import{useForm} from "react-hook-form"
+import { useActivityFunction } from "@/hook/useActivityFunction";
 
 
 
@@ -99,6 +100,12 @@ const{register , handleSubmit  , reset} = useForm();
   //   }
   // };
 
+
+    // activity functions
+    const activityFunction = useActivityFunction();
+
+
+
   //use Mutation - create
   const mutation = useMutation({
     mutationFn : async(formData)=>{
@@ -117,12 +124,20 @@ const{register , handleSubmit  , reset} = useForm();
 
       // clear form after success
       reset();
+
+
+      //add activity
+      activityFunction("member add successfully")
+
     } ,
     onError : (error)=>{
          console.error("Error adding member:", error.message);
          alert("Error adding member:");
          // clear form after success
       reset();
+
+        //add activity
+      activityFunction("member add Error!")
     }
   });
   
@@ -137,11 +152,17 @@ const{register , handleSubmit  , reset} = useForm();
        alert("Member delete Successfully !");
       queryClient.invalidateQueries({ queryKey: ["adminmembers"] });
 
+        //add activity
+      activityFunction("member Deleted successfully")
+
      },
 
       onError : (error)=>{
          console.error("Error delete member:", error);
          alert("Error Delete member!");
+
+         //add activity
+      activityFunction("member delete Error!")
     }
 
   })

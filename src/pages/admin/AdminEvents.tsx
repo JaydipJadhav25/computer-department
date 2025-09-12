@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { axiosInstance } from "@/config/axiosConfig";
+import { useActivityFunction } from "@/hook/useActivityFunction";
 
 // Define type for event
 interface Event {
@@ -124,6 +125,11 @@ const AdminEvents = () => {
   });
   
   
+
+  // activity functions
+  const activityFunction = useActivityFunction();
+
+
   //mutation for create
    const mutation = useMutation({
       mutationFn : async(formData)=>{
@@ -139,15 +145,22 @@ const AdminEvents = () => {
             queryClient.invalidateQueries({ queryKey: ["adminevents"] });
               //close         
               setOpen(false);
+              
           
         // clear form after success
         reset();
+
+        //activity
+         activityFunction("Events added successfully")
       } ,
       onError : (error)=>{
            console.error("Error adding Events", error);
            alert("Error adding Events...! ");
            // clear form after success
         reset();
+
+         //activity
+         activityFunction("Events added Error")
       }
     });
   
@@ -162,11 +175,18 @@ const AdminEvents = () => {
        console.log("Event deleted successfully......." , data);
        alert("Event delete Successfully !");
        queryClient.invalidateQueries({ queryKey: ["adminevents"] });
+
+
+        //activity
+         activityFunction("Event deleted successfully")
      },
 
       onError : (error)=>{
          console.error("Error delete Event:", error);
          alert("Error Delete Event !");
+
+         activityFunction("Event delete Error !")
+
     }
 
   })  

@@ -12,6 +12,7 @@ import { axiosInstance } from "@/config/axiosConfig";
 import { useMutation, useQuery  , useQueryClient} from "@tanstack/react-query";
 // import { number } from "framer-motion";
 import {useForm} from "react-hook-form"
+import { useActivityFunction } from "@/hook/useActivityFunction";
 
 
 
@@ -58,30 +59,52 @@ const { isError, isLoading, data, error } = useQuery({
 });
 
 
+// activity functions
+const activityFunction = useActivityFunction();
+
 //create
  const mutation = useMutation({
     mutationFn : async(formData)=>{
      const responce = await axiosInstance.post("/admin/announcements" ,formData );
     return responce.data;
     },
-    onSuccess : (data : any)=>{
+    onSuccess : async(data : any)=>{
           console.log("annceuncement add successfully : " , data);
          alert("Announcement add successfully ")
           
           // refresh the members list
         
           queryClient.invalidateQueries({ queryKey: ["adminanncements"] });
- //close         
- setShowForm(false);
-        
+          //close         
+          setShowForm(false);
+                  
       // clear form after success
       reset();
+
+
+    //   // //add activity => not good way
+    //    await axiosInstance.post("/admin/activities" ,{
+    //   action : "Add New Announcement"
+    //  });
+    // //reset
+    //  queryClient.invalidateQueries({ queryKey: ["activities"] });
+    
+    //good way 
+    activityFunction("Add New Announcement");
+
+
+
+
     } ,
-    onError : (error)=>{
+    onError : async(error)=>{
          console.error("Error adding anncements:", error);
          alert("Error adding anncements:");
          // clear form after success
       reset();
+
+    activityFunction("Error Adding Announcement");
+    
+
     }
   });
 
@@ -102,11 +125,18 @@ const { isError, isLoading, data, error } = useQuery({
         
           queryClient.invalidateQueries({ queryKey: ["adminanncements"] });
 
+        
+        activityFunction(`Announcement  Deleted!`);
+           
+
+
      },
 
       onError : (error)=>{
          console.error("Error announcement member:", error);
          alert("Announcement Delete member!");
+    activityFunction(`Announcement  Delete Error!`);
+
     }
 
   });
@@ -125,7 +155,7 @@ const { isError, isLoading, data, error } = useQuery({
      },
      onSuccess : (data)=>{
        console.log("announcement update successfully......." , data);
-            alert("Announcement update Successfully !");
+            alert("Announcement update Successfully ");
      
           // refresh the 
           queryClient.invalidateQueries({ queryKey: ["adminanncements"] });
@@ -136,11 +166,15 @@ const { isError, isLoading, data, error } = useQuery({
           //reset data
           reset();
 
+        activityFunction(`Announcement  updated!`);
+
      },
 
       onError : (error)=>{
          console.error("Error announcement update member:", error);
          alert("Announcement Update member!");
+        activityFunction(`Announcement  updated Error!`);
+
     }
 
   })

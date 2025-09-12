@@ -35,7 +35,7 @@ const EventCard = ({ event }: { event: EventProps }) => {
     maxCapacity,
     tags
   } = event;
-  // console.log("EventCard", imgurl);
+  console.log("EventCard", imgurl , googlelink);
   
 
   // Combine date + time
@@ -130,7 +130,7 @@ const EventCard = ({ event }: { event: EventProps }) => {
 
 //date convert in obj then compare
 const isUpcoming = new Date(date) > new Date();
-
+console.log("isUpcoming : " , isUpcoming)
 
 
 
@@ -224,14 +224,24 @@ const formatDate = (dateString : string) => {
       </CardContent>
       
       <CardFooter className="pt-0 pb-6 px-6">
-      <a href={googlelink} target="_blank" rel="noopener noreferrer">
-        <Button 
+      {/* <a href={googlelink} target="_blank" rel="noopener noreferrer"> */}
+      <a href={"https://maps.app.goo.gl/VPwq5Niuwi83eSpm7"} target="_blank" rel="noopener noreferrer">
+        {/* <Button 
           className="w-full"
           variant={registrationOpen ? "default" : "secondary"}
           disabled={!registrationOpen}
         >
           {registrationOpen ? "Register Now" : "Registration Closed"}
-        </Button>
+        </Button> */}
+
+   <Button 
+  className="w-full disabled:cursor-not-allowed disabled:opacity-50"
+  variant={registrationOpen ? "default" : "secondary"}
+  disabled={!isUpcoming}
+>
+  {isUpcoming ? "Register Now" : "Registration Closed"}
+</Button>
+
         </a>
       </CardFooter>
     </Card>

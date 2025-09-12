@@ -11,6 +11,7 @@ import { Lock, LogIn } from "lucide-react";
 import { toast } from "sonner"
 import {useForm} from "react-hook-form"
 import useAuth from "@/components/contexts/useAuth";
+import { useActivityFunction } from "@/hook/useActivityFunction";
 
 
 
@@ -24,6 +25,9 @@ const Login = () => {
 
   // const { toast } = useToast();
   const { login } = useAuth();
+
+
+  const activityFunction = useActivityFunction();
 
   // const handleLogin = (e: React.FormEvent) => {
   //   e.preventDefault();
@@ -83,15 +87,13 @@ const Login = () => {
         // Use the auth context login function instead of directly manipulating localStorage
         login(date.username, "admin");
         
+        activityFunction("admin Login successfully") 
+
         toast("Login successful", {
           description: "Welcome back, Admin!",
           action: {
             label: "Undo",
             onClick: () => console.log("Undo"),
-          },
-          style : {
-            backgroundColor : "gray",
-            color : "green"
           }
         });
        

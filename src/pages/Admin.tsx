@@ -2,8 +2,36 @@
 import { Link } from "react-router-dom";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Users, Calendar, Bell, PieChart } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { axiosInstance } from "@/config/axiosConfig";
+import {  formatDistanceToNow } from "date-fns";
+
+
+interface Activity {
+  action: string;
+  createdAt: string; // or Date if parsed
+  _id: string; // assuming _id is present from MongoDB
+}
+
+
+
 
 export const AdminPanel = () => {
+
+
+  //fetch activity
+  const {isError , isLoading , data , error} = useQuery<any>({
+    queryKey : ["activities"],
+    queryFn : async()=>{
+      const limit = 4;
+      const  response = await axiosInstance(`/open/activities?limit=${limit}`);
+      return response.data;
+    },
+     gcTime : Infinity,
+    staleTime : Infinity
+  })
+console.log("error : " , error);
+
   return (
     <AdminLayout currentPage="dashboard">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -58,7 +86,7 @@ export const AdminPanel = () => {
         <div className="bg-card p-6 rounded-lg border shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
           <div className="space-y-4">
-            {[
+            {/* {[
               { action: "New member added", time: "2 hours ago" },
               { action: "Event created: Hackathon 2023", time: "1 day ago" },
               { action: "Announcement posted: Registration Open", time: "2 days ago" },
@@ -68,7 +96,31 @@ export const AdminPanel = () => {
                 <span>{item.action}</span>
                 <span className="text-sm text-muted-foreground">{item.time}</span>
               </div>
-            ))}
+            ))} */}
+
+            {
+              isLoading ? <>
+               <h1 className="text-xl font-semibold mb-4 text-green-950">Loading Recent Activities...</h1>
+              </> :<>
+                    {
+                      isError ? <>
+               <h1 className="text-xl font-semibold mb-4 text-red-950">Check your network connection status!</h1> 
+                      </> :<>
+                        
+                  {
+                    data?.map((item: Activity, i: any) => (
+                      <div key={i} className="flex justify-between p-2 hover:bg-muted/50 rounded-md">
+                        <span>{item.action}</span>
+                        <span className="text-sm text-muted-foreground">
+                          {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
+                        </span>
+                      </div>
+                    ))
+                  }
+                      </>
+                    }  
+              </>
+            }
           </div>
         </div>
       </div>
