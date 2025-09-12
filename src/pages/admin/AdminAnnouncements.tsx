@@ -116,26 +116,42 @@ const activityFunction = useActivityFunction();
          const response = await axiosInstance.post("/admin/announcement/delete" , { id});
          return response.data;
      },
+     onMutate :async (id) =>{
+             //cancel query fetch
+             await queryClient.cancelQueries({queryKey :["adminanncements"]})
+
+             //get previose data for rollback
+             const previoseData = queryClient.getQueryData(["adminanncements"]);
+            console.log("previoseData :" , previoseData);
+
+             queryClient.setQueryData(["adminanncements"], (old: any[] = []) => {
+              return old.filter(item => item._id !== id);
+            });
+            
+            //return
+            return { previoseData};
+
+     },
      onSuccess : (data)=>{
        console.log("announcement deleted successfully......." , data);
-       alert("Announcement delete Successfully !");
-     
-           
+       alert("Announcement delete Successfully !");   
           // refresh the 
-        
           queryClient.invalidateQueries({ queryKey: ["adminanncements"] });
-
-        
         activityFunction(`Announcement  Deleted!`);
            
 
 
      },
-
-      onError : (error)=>{
+      onError : (error ,id , context)=>{
          console.error("Error announcement member:", error);
          alert("Announcement Delete member!");
     activityFunction(`Announcement  Delete Error!`);
+      console.log("userid : " , id);
+      queryClient.setQueryData(["adminanncements"] , context?.previoseData);
+
+    },
+    onSettled : ()=>{
+          queryClient.invalidateQueries({ queryKey: ["adminanncements"] });
 
     }
 
@@ -179,6 +195,7 @@ const activityFunction = useActivityFunction();
 
   })
 
+  
 
   // form 
  function handleFormSubmit(formData : any){
